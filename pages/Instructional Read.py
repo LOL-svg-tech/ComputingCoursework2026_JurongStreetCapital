@@ -8,8 +8,8 @@ st.title("Let's learn Trade!")
 
 
 st.markdown("This app is designed to help youths are very new to trading to get them started on these good financial habits.")
-st.markdown("This course is specifically designed for those who have very little knowledge of trading")
-st.markdown("This course entails 15 modules starting with foundation and ending with ethics. After each module, you will have to complete a quiz in order to progress to the next module.")
+st.markdown("This package is specifically designed for those who have very little knowledge of trading")
+st.markdown("This package entails 5 articles starting with foundation and ending with Quantitative Trading. After each article, you will have to complete a quiz in order to progress to the next article.")
 
 
 st.divider()
@@ -20,7 +20,7 @@ st.divider()
 #############
 st.header(
 '''
-Module 1:  Introduction to Trading
+Article 1:  Introduction to Trading
 ''')
 # Part 1 - Terminologies #
 st.subheader("Terminologies")
@@ -66,5 +66,37 @@ govt.write("Not only that, it creates trust and support wihin the government and
 st.space()
 
 
-# Part 3 - Inflation and Trading
+# Part 3 - Trading vs Investment
 st.subheader("The relationship between inflation and trading")
+time, risk = st.columns(2, gap = "medium")
+time.badge("Time Horizon", color = "blue")
+time.write("Investing is a Long Term Horizon where wealth is accumulated over a long period of time in years or decades. Whereas Trading is a Short Term Horizon where assets are bought and sold within a short period of time such as days, weeks or months.")
+risk.badge("Risk Volatility", color = "red")
+risk.write("The risks involved in investing is lower as the timeframe is longer to recover from losses. People exploit this volatility to earn high quickly while risking their earnings if prices fall. Whereas investing is more reliable as it does not cause significant losses even if the market falls due to the accumulated wealth.")
+
+#Part 4 - Financial Markets
+st.subheader("Financial Markets")
+etf, forex, crypto = st.tabs(["ETFs", "Forex", "Cryptocurrency"])
+etf.write("ETFs or Exchange Traded Funds is a basket of multiple assets, providing flexibility and convenience while Trading. They reduce company-specific risks.They can be traded even on days when markets fluctuate which can't be done with mutual assets")
+etf.write("Some examples include government bonds, commodities like gold and even other countries' currencies.")
+forex.write("Forex or Foreign-Exhange is a global marketplace for exchanging currencies. It allows multiple stakeholders from individuals to businesses to convert their money for international trade.")
+forex.write("Do note that unlike other markets, forex markets are highly volatile due to changing geopolitics and economic situations of various countries.")
+forex.write("Fun Fact: Do you know that the commonly exchanged currencies are USD, EUR, JPY and GBP?")
+crypto.write("Cryptocurrencies is a decentralised system where the autonomy of the markets are not controlled by commercial banks and government.")
+crypto.write("It used blockchain technology which digitally tracks and monitors online transactions and are operated digitally with no physical means.")
+crypto.write("The famous type of cryptocurrency is Bitcoin which is the 1st system used since 2009 which has the highest value and is highly recognised.")
+
+#Part 5 - Order Types
+st.subheader("Orders")
+st.write("An Order is a specific set of instruction given by a broker or trader to trade an asset under specific conditions. For basics we will be looking at 2 main types of orders in trading.")
+st.badge("Market Order", color = "violet")
+st.write("Market Orders are used when there is high liquidity of markets. This would mean that people who are trading will need to think and buy decisively within a short period of time.")
+st.badge("Limit Orders", color = "orange")
+st.write("Limit Orders are instructions given to a broker to sell or buy a security at a specific order or higher. Unlike Market Order where decisions have to be made quickly, Limit Orders require careful observation of the market.")
+st.write("When the price is below market price, an asset will be bought. Similary, when the market price increases, orders will be given to sell the asset to ensure maximum profit is gained.")
+st.write("If the market price does not reach the desired or expected price, the order is said to be unfilled.")
+
+#Part 6 - Risk Management
+st.subheader("Risk Management")
+st.write("Why do most traders lose money despite being careful with their decisions?")
+
