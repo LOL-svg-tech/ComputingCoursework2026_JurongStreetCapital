@@ -10,7 +10,7 @@ st.write(
 )
 
 st.markdown(
-    "This app is designed to help youths are very new to trading to get them started on these good financial habits."
+    "This app is designed to help youths who are very new to trading to get them started on these good financial habits."
 )
 st.markdown(
     "This package is specifically designed for those who have very little knowledge of trading"
