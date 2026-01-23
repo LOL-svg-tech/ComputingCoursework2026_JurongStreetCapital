@@ -15,14 +15,15 @@ st.markdown("This package entails 5 articles starting with foundation and ending
 st.divider()
 
 
-#############
-# Module 1 #
-#############
 st.header(
 '''
-Article 1:  Introduction to Trading
+Introduction to Trading
 ''')
+
+
+##########################
 # Part 1 - Terminologies #
+##########################
 st.subheader("Terminologies")
 st.write("Before we dive into trading, it's important to differentiate between these 3 terminolgies that are often confused by many beginners:")
 col1, col2, col3  = st.columns(3)
@@ -35,9 +36,11 @@ col3.write("It is essentially similar to trading but with a longer timeframe. It
 
 
 st.space()
+st.divider()
 
-
+#########################
 # Part 2 - Why Trading? #
+#########################
 st.subheader("Why do people trade?")
 st.write("In the financial world, 3 main parties involve in trading:")
 indiv, busi, govt = st.tabs(["Individuals", "Businesses", "Government"])
@@ -64,9 +67,11 @@ govt.write("Not only that, it creates trust and support wihin the government and
 
 
 st.space()
+st.divider()
 
-
-# Part 3 - Trading vs Investment
+#################################
+# Part 3 - Trading vs Investment#
+#################################
 st.subheader("The relationship between inflation and trading")
 time, risk = st.columns(2, gap = "medium")
 time.badge("Time Horizon", color = "blue")
@@ -74,7 +79,12 @@ time.write("Investing is a Long Term Horizon where wealth is accumulated over a 
 risk.badge("Risk Volatility", color = "red")
 risk.write("The risks involved in investing is lower as the timeframe is longer to recover from losses. People exploit this volatility to earn high quickly while risking their earnings if prices fall. Whereas investing is more reliable as it does not cause significant losses even if the market falls due to the accumulated wealth.")
 
-#Part 4 - Financial Markets
+st.space()
+st.divider()
+
+############################
+#Part 4 - Financial Markets#
+############################
 st.subheader("Financial Markets")
 etf, forex, crypto = st.tabs(["ETFs", "Forex", "Cryptocurrency"])
 etf.write("ETFs or Exchange Traded Funds is a basket of multiple assets, providing flexibility and convenience while Trading. They reduce company-specific risks.They can be traded even on days when markets fluctuate which can't be done with mutual assets")
@@ -86,7 +96,12 @@ crypto.write("Cryptocurrencies is a decentralised system where the autonomy of t
 crypto.write("It used blockchain technology which digitally tracks and monitors online transactions and are operated digitally with no physical means.")
 crypto.write("The famous type of cryptocurrency is Bitcoin which is the 1st system used since 2009 which has the highest value and is highly recognised.")
 
-#Part 5 - Order Types
+st.space()
+st.divider()
+
+######################
+#Part 5 - Order Types#
+######################
 st.subheader("Orders")
 st.write("An Order is a specific set of instruction given by a broker or trader to trade an asset under specific conditions. For basics we will be looking at 2 main types of orders in trading.")
 st.badge("Market Order", color = "violet")
@@ -96,7 +111,48 @@ st.write("Limit Orders are instructions given to a broker to sell or buy a secur
 st.write("When the price is below market price, an asset will be bought. Similary, when the market price increases, orders will be given to sell the asset to ensure maximum profit is gained.")
 st.write("If the market price does not reach the desired or expected price, the order is said to be unfilled.")
 
-#Part 6 - Risk Management
-st.subheader("Risk Management")
-st.write("Why do most traders lose money despite being careful with their decisions?")
+st.space()
+st.divider()
 
+##########################
+#Part 6 - Risk Management#
+##########################
+st.subheader("Risk Management")
+st.caption("Why do most beginners lose money despite being careful with their decisions?")
+st.badge("1)Emotional Discipline", color = "green")
+st.write("Many traders are unable to regulate their emotions as they are in the constant fear of losing money. This fear can cause them to make wrong decisions.")
+st.write("Thus many resort to revenge-trading whereby they trade quickly to earn back the money that they lost.")
+st.write("On the other hand, those who have earned money at first few trades, do not stick to their structure and deviate away from it losing money")
+st.write("in the process.")
+st.space()
+st.badge("2)Lack of Knowledge ", color = "red")
+st.write("Many beginners mistake trading for obtaining easy money. As such without proper training and fundamental analysis of the market,")
+st.write("they make careless decisions by following trends or moves made by other brokers or agents within the market blindly.")
+st.space()
+st.badge("3)Taxes on Profits", color = "yellow")
+st.write("Trading excessively increases taxes and brokerage fees which impact  profits.")
+
+st.space()
+st.divider()
+
+##############################
+#Part 7 - Risk Factor Profits#
+##############################
+st.subheader("Mathematical Calculation of Risk Factors in Trading")
+stop, position = st.tabs(["Stop Loss and Take profit", "Position-Sizing(fixed)"])
+
+with st.popover("Calculate Risk-Reward Ratio"):
+    st.badge("Step 1: Entry Price - Stop-Loss Price", color = "gray")
+    st.markdown("This is the maximum amaount you are willing to lose")
+    st.space()
+    st.badge("Step 2: Take-Profit Price - Entry Price", color = "gray")
+    st.markdown("This is the target profit you are willing to make")
+    st.space()
+    st.badge("Divide the 1st value by 2nd value", color = "gray")
+    st.markdown("If the ratio is more than 1, the chances are more favourable to you.")
+stop.write("Stop-loss Take-Profit Ratio is also known as Risk-Reward Ratio.")
+stop.write("Stop loss is desined to protect a trader's capital in case the market moves against them. It does so by automatically exiting the position in market, thus reducing potential losses.")
+stop.write("Take-Profit locks in the profits gained by a particular margin. It caps the profits earned to reduce greed which can lead to reversal potential losses.")
+stop.write("It strengthens the discpline of traders by ensuring they trade passively without the need to monitor the markets. On top of that, it helps them to not make impulsive decisions.")
+
+position.write("")
