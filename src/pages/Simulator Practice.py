@@ -6,6 +6,7 @@ from alpaca.trading.client import TradingClient
 from alpaca.trading.requests import MarketOrderRequest, LimitOrderRequest
 from alpaca.trading.enums import OrderSide, TimeInForce
 from alpaca.common.exceptions import APIError
+import yfinance as yf
 
 
 
@@ -75,6 +76,7 @@ bal = float(account.equity)
 positions = Util.to_dataframe(client.get_all_positions())
 orders = Util.to_dataframe(client.get_orders())
 
+
 #TOP OF THE PAGE THINGS ------------
 st.subheader(f"Current Portfolio Value: USD{bal:.2f}")
 if bal_chg >= 0:
@@ -91,10 +93,11 @@ try:
 except:
     st.error("insert a valid symbol pls")
 
+sym_info = yf.Ticker(sym)
 orderSide = st.sidebar.selectbox("Select Order Side", ["Buy","Sell"])
 orderType = st.sidebar.selectbox("Select Order Type", ["Limit(LMT)", "Market(MKT)"])
 if orderType == "Limit(LMT)":
-    lmtPrice = st.sidebar.number_input("Enter limit price")
+    lmtPrice = st.sidebar.number_input("Enter Limit Price", value=sym_info.fast_info.last_price)
 tif = st.sidebar.selectbox("Time In Force", list(timeInForce))
 qty = st.sidebar.number_input("Select Qty (Fractional orders are DAY only)")
 st.sidebar.button("Send order",on_click=limitOrder if orderType=="Limit(LMT)" else marketOrder)
