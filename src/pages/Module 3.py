@@ -1,4 +1,7 @@
 import streamlit as st
+import yfinance as yf
+import random
+import plotly.graph_objects as go
 
 st.title("Let's learn Trade!")
 
@@ -6,9 +9,13 @@ st.divider()
 
 st.header("Article 3: Indicator-Based Trading")
 
-st.subheader("Indicators are not magic. Past performance does not guarantee future results.")
+st.subheader(
+    "Indicators are not magic. Past performance does not guarantee future results."
+)
 st.subheader("Indicators vs Reality: What do they actually do?")
-st.write("Indicators apply math to historical market data in order for traders to understand what is going on.")
+st.write(
+    "Indicators apply math to historical market data in order for traders to understand what is going on."
+)
 st.markdown("""
 Indicators are based on **past data**, which means:
 - They **summarize historical prices**.
@@ -20,7 +27,13 @@ st.write("This means that indicators should be used as tools, and not as prophec
 st.divider()
 st.subheader("Different Types of Indicators")
 
-rsi, macd, bollinger = st.tabs(["Relative Strength Index", "Moving Average Convergence Divergence", "Bollinger Bands"])
+rsi, macd, bollinger = st.tabs(
+    [
+        "Relative Strength Index",
+        "Moving Average Convergence Divergence",
+        "Bollinger Bands",
+    ]
+)
 
 with rsi:
     st.markdown("### Relative Strength Index (RSI)")
@@ -82,7 +95,7 @@ st.divider()
 st.subheader("Common Mistakes with Indicators")
 st.write("""
 Many traders fall into these traps:
-- **Indicator stacking:** Using too many indicators can create confusion, not clarity.
+- **Indicator stacking:** Using too many indicators can create confusion.
 - **Late entries:** Waiting for all indicators to confirm often means entering after most of the move is over.
 - **Over-optimization:** Adjusting indicator parameters too closely to past data reduces future reliability.
 - **Setting take profits and stop losses incorrectly**
@@ -93,18 +106,41 @@ Many traders fall into these traps:
 st.divider()
 st.subheader("Interactive Indicator Learning")
 
-st.write("You can experiment with indicators on charts and practice identifying signals.")
+st.write(
+    "You can experiment with indicators on charts and practice identifying signals."
+)
 
 # Example: Toggle indicators on a sample chart
 show_rsi = st.checkbox("Show RSI")
 show_macd = st.checkbox("Show MACD")
 show_bollinger = st.checkbox("Show Bollinger Bands")
 
-st.write("*(Charts would appear here with selected indicators in a full app)*")
+tickers = []
+with open("sp500_tickers.txt", "r") as fin:
+    for line in fin:
+        tickers.append(line.rstrip("\n"))
+ticker = random.choice(tickers)
+data = yf.download(ticker, period="1d", interval="5m")
+
+fig = go.Figure(
+    data=[
+        go.Candlestick(
+            x=data.index,
+            open=data[("Open", ticker)],
+            high=data[("High", ticker)],
+            low=data[("Low", ticker)],
+            close=data[("Close", ticker)],
+        )
+    ]
+)
+fig.show()
+
 
 # Example: Signal labeling exercise
 st.write("### Signal Labeling Exercise")
-st.write("Look at the chart and label whether the signal is bullish, bearish, or neutral based on the indicators you toggled.")
+st.write(
+    "Look at the chart and label whether the signal is bullish, bearish, or neutral based on the indicators you toggled."
+)
 signal_options = ["Bullish", "Bearish", "Neutral"]
 signal_choice = st.radio("Your Signal Choice:", signal_options)
 st.write(f"You selected: **{signal_choice}**")
@@ -120,3 +156,4 @@ st.markdown("""
 st.write("Try to spot a confluence where all three indicators agree.")
 
 st.success("Great! You've completed Module 3 on Indicator-Based Trading. 🎉")
+print(data.columns)
