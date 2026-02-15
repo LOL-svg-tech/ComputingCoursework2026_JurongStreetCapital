@@ -2,6 +2,7 @@ import streamlit as st
 import yfinance as yf
 import random
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 st.title("Let's learn Trade!")
 
@@ -122,18 +123,19 @@ with open("sp500_tickers.txt", "r") as fin:
 ticker = random.choice(tickers)
 data = yf.download(ticker, period="1d", interval="5m")
 
-fig = go.Figure(
-    data=[
-        go.Candlestick(
-            x=data.index,
-            open=data[("Open", ticker)],
-            high=data[("High", ticker)],
-            low=data[("Low", ticker)],
-            close=data[("Close", ticker)],
-        )
-    ]
+fig = make_subplots(rows=2, cols=1)
+print(data.columns)
+print(type(data.index))
+candle_fig = go.Candlestick(
+    x=data.index,
+    open=data[("Close", ticker)],
+    high=data[("Open", ticker)],
+    low=data[("Close", ticker)],
+    close=data[("Close", ticker)],
 )
-fig.show()
+
+rsi_fig = "six seven"
+fig.add_trace(candle_fig, row=1, col=1)
 
 
 # Example: Signal labeling exercise
@@ -141,6 +143,9 @@ st.write("### Signal Labeling Exercise")
 st.write(
     "Look at the chart and label whether the signal is bullish, bearish, or neutral based on the indicators you toggled."
 )
+st.plotly_chart(fig)
+
+
 signal_options = ["Bullish", "Bearish", "Neutral"]
 signal_choice = st.radio("Your Signal Choice:", signal_options)
 st.write(f"You selected: **{signal_choice}**")
@@ -156,4 +161,3 @@ st.markdown("""
 st.write("Try to spot a confluence where all three indicators agree.")
 
 st.success("Great! You've completed Module 3 on Indicator-Based Trading. 🎉")
-print(data.columns)
