@@ -123,9 +123,8 @@ with open("sp500_tickers.txt", "r") as fin:
 ticker = random.choice(tickers)
 data = yf.download(ticker, period="1d", interval="5m")
 
-fig = make_subplots(rows=2, cols=1)
-print(data.columns)
-print(type(data.index))
+fig = make_subplots(rows=3, cols=1)
+fig.update_layout(height=600)
 candle_fig = go.Candlestick(
     x=data.index,
     open=data[("Close", ticker)],
@@ -134,9 +133,15 @@ candle_fig = go.Candlestick(
     close=data[("Close", ticker)],
 )
 
-rsi_fig = "six seven"
-fig.add_trace(candle_fig, row=1, col=1)
+rsi_fig = go.Scatter(
+    x=data.index, y=data.ta.rsi(close=data[("Close", ticker)]), mode="lines"
+)
 
+fig.add_trace(candle_fig, row=1, col=1)
+fig.add_trace(rsi_fig, row=3, col=1)
+fig.update_yaxes(range=[0, 100], row=3, col=1)
+fig.add_hline(y=70, row=3, col=1, line_color="white")
+fig.add_hline(y=30, row=3, col=1, line_color="white")
 
 # Example: Signal labeling exercise
 st.write("### Signal Labeling Exercise")
