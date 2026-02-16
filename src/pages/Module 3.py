@@ -3,6 +3,7 @@ import yfinance as yf
 import random
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import pandas_ta as ta
 
 st.title("Let's learn Trade!")
 
@@ -123,32 +124,64 @@ with open("sp500_tickers.txt", "r") as fin:
 ticker = random.choice(tickers)
 data = yf.download(ticker, period="1d", interval="5m")
 
-fig = make_subplots(rows=3, cols=1)
-fig.update_layout(height=600)
-candle_fig = go.Candlestick(
-    x=data.index,
-    open=data[("Close", ticker)],
-    high=data[("Open", ticker)],
-    low=data[("Close", ticker)],
-    close=data[("Close", ticker)],
+
+candle_fig = go.Figure(
+    data=[
+        go.Candlestick(
+            x=data.index,
+            open=data[("Close", ticker)],
+            high=data[("Open", ticker)],
+            low=data[("Close", ticker)],
+            close=data[("Close", ticker)],
+        )
+    ]
 )
 
-rsi_fig = go.Scatter(
-    x=data.index, y=data.ta.rsi(close=data[("Close", ticker)]), mode="lines"
+rsi_fig = go.Figure(
+    data=[
+        go.Scatter(
+            x=data.index, y=data.ta.rsi(close=data[("Close", ticker)]), mode="lines"
+        )
+    ],
+    layout=go.Layout(height=250),
 )
 
-fig.add_trace(candle_fig, row=1, col=1)
-fig.add_trace(rsi_fig, row=3, col=1)
-fig.update_yaxes(range=[0, 100], row=3, col=1)
-fig.add_hline(y=70, row=3, col=1, line_color="white")
-fig.add_hline(y=30, row=3, col=1, line_color="white")
+
+rsi_fig.update_yaxes(range=[0, 100])
+rsi_fig.add_hline(y=70, line_color="white")
+rsi_fig.add_hline(y=30, line_color="white")
+
+macd_fig = go.Figure(layout=go.Layout(height=250))
+macd_fig.add_trace(
+    go.Scatter(
+        x=data.index,
+        y=data.ta.macd(close=data[("Close", ticker)])["MACD_12_26_9"],
+        mode="lines",
+        name="MACD Line",
+    )
+)
+macd_fig.add_trace(
+    go.Scatter(
+        x=data.index,
+        y=data.ta.macd(close=data[("Close", ticker)])["MACDs_12_26_9"],
+        mode="lines",
+        name="Signal Line",
+    )
+)
 
 # Example: Signal labeling exercise
 st.write("### Signal Labeling Exercise")
 st.write(
     "Look at the chart and label whether the signal is bullish, bearish, or neutral based on the indicators you toggled."
 )
-st.plotly_chart(fig)
+st.write(f"### {ticker} Candlestick Chart")
+st.plotly_chart(candle_fig)
+if show_rsi:
+    st.write("### RSI")
+    st.plotly_chart(rsi_fig)
+if show_macd:
+    st.write("### MACD")
+    st.plotly_chart(macd_fig)
 
 
 signal_options = ["Bullish", "Bearish", "Neutral"]
