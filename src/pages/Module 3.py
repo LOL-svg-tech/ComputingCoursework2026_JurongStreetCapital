@@ -28,7 +28,6 @@ st.write("This means that indicators should be used as tools, and not as prophec
 
 st.divider()
 st.subheader("Different Types of Indicators")
-
 rsi, macd, bollinger = st.tabs(
     [
         "Relative Strength Index",
@@ -36,7 +35,6 @@ rsi, macd, bollinger = st.tabs(
         "Bollinger Bands",
     ]
 )
-
 with rsi:
     st.markdown("### Relative Strength Index (RSI)")
     st.write("""
@@ -47,7 +45,6 @@ with rsi:
              
     RSI is generally used in reversal strategies, where they see the market move in one direction, and what to profit from a price reversal, which is usually very strong
     """)
-
 with macd:
     st.markdown("### Moving Average Convergence Divergence (MACD)")
     st.write("""
@@ -58,7 +55,6 @@ with macd:
     
     The signal line is the EMA of the MACD line. When the MACD is above the signal line, it indicates upward momentum; when it is below, momentum is weakening.
     """)
-
 with bollinger:
     st.markdown("### Bollinger Bands")
     st.markdown("""
@@ -73,12 +69,11 @@ with bollinger:
     - Bands widening → high volatility
     - Bands contracting → low volatility
     """)
-
 st.divider()
 st.subheader("Indicator Confluence")
 st.write("""
 Relying on **one indicator alone** is risky. If one of the indicators is wrong and you rely solely on it, your trading decision will more often than not be inaccurate.
-         
+       
 Combining indicators can:
 - Reduce false signals
 - Confirm trends or reversals
@@ -89,10 +84,8 @@ st.markdown("""
 - RSI is under 30 (Indicates it is oversold)  
 - Price touches lower Bollinger Band (Indicates that it is on the lower end of the price range, and oversold)
 - MACD shows bullish crossover (Indicates that price wants to go up)
-
 This combination increases the probability of a valid trade setup.
 """)
-
 st.divider()
 st.subheader("Common Mistakes with Indicators")
 st.write("""
@@ -104,27 +97,21 @@ Many traders fall into these traps:
     - Take Profit too far → price may never reach it; Take Profit too close → miss potential gains.
     - Stop Loss too far → risk larger losses; Stop Loss too close → risk being stopped out on a temporary dip.
 """)
-
 st.divider()
 st.subheader("Interactive Indicator Learning")
-
 st.write(
     "You can experiment with indicators on charts and practice identifying signals."
 )
-
 # Example: Toggle indicators on a sample chart
 show_rsi = st.checkbox("Show RSI")
 show_macd = st.checkbox("Show MACD")
 show_bollinger = st.checkbox("Show Bollinger Bands")
-
 tickers = []
 with open("sp500_tickers.txt", "r") as fin:
     for line in fin:
         tickers.append(line.rstrip("\n"))
 ticker = random.choice(tickers)
 data = yf.download(ticker, period="1d", interval="5m")
-
-
 candle_fig = go.Figure(
     data=[
         go.Candlestick(
@@ -133,6 +120,7 @@ candle_fig = go.Figure(
             high=data[("Open", ticker)],
             low=data[("Close", ticker)],
             close=data[("Close", ticker)],
+            name="Candles",
         )
     ]
 )
@@ -145,8 +133,6 @@ rsi_fig = go.Figure(
     ],
     layout=go.Layout(height=250),
 )
-
-
 rsi_fig.update_yaxes(range=[0, 100])
 rsi_fig.add_hline(y=70, line_color="white")
 rsi_fig.add_hline(y=30, line_color="white")
@@ -168,7 +154,28 @@ macd_fig.add_trace(
         name="Signal Line",
     )
 )
-
+if show_bollinger:
+    candle_fig.add_trace(
+        go.Scatter(
+            x=data.index,
+            y=data.ta.bbands(close=data["Close", ticker])["BBL_5_2.0_2.0"],
+            name="Lower",
+        )
+    )
+    candle_fig.add_trace(
+        go.Scatter(
+            x=data.index,
+            y=data.ta.bbands(close=data["Close", ticker])["BBU_5_2.0_2.0"],
+            name="Upper",
+        )
+    )
+    candle_fig.add_trace(
+        go.Scatter(
+            x=data.index,
+            y=data.ta.bbands(close=data["Close", ticker])["BBM_5_2.0_2.0"],
+            name="Middle",
+        )
+    )
 # Example: Signal labeling exercise
 st.write("### Signal Labeling Exercise")
 st.write(
