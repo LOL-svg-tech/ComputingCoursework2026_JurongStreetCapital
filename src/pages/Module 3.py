@@ -2,8 +2,8 @@ import streamlit as st
 import yfinance as yf
 import random
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 import pandas_ta as ta
+from pandas.tseries.frequencies import to_offset
 
 st.title("Let's learn Trade!")
 
@@ -111,15 +111,18 @@ with open("sp500_tickers.txt", "r") as fin:
     for line in fin:
         tickers.append(line.rstrip("\n"))
 ticker = random.choice(tickers)
-data = yf.download(ticker, period="1d", interval="5m")
+fived_data = yf.download(ticker, period="5d", interval="5m")
+fived_data.index = fived_data.index.tz_convert("America/New_York")
+cutoff = fived_data.index[-1] - to_offset("1D")
+oned_data = fived_data[fived_data.index > cutoff]
 candle_fig = go.Figure(
     data=[
         go.Candlestick(
-            x=data.index,
-            open=data[("Close", ticker)],
-            high=data[("Open", ticker)],
-            low=data[("Close", ticker)],
-            close=data[("Close", ticker)],
+            x=oned_data.index,
+            open=oned_data[("Open", ticker)],
+            high=oned_data[("High", ticker)],
+            low=oned_data[("Low", ticker)],
+            close=oned_data[("Close", ticker)],
             name="Candles",
         )
     ]
@@ -128,7 +131,9 @@ candle_fig = go.Figure(
 rsi_fig = go.Figure(
     data=[
         go.Scatter(
-            x=data.index, y=data.ta.rsi(close=data[("Close", ticker)]), mode="lines"
+            x=oned_data.index,
+            y=oned_data.ta.rsi(close=oned_data[("Close", ticker)]),
+            mode="lines",
         )
     ],
     layout=go.Layout(height=250),
@@ -140,16 +145,16 @@ rsi_fig.add_hline(y=30, line_color="white")
 macd_fig = go.Figure(layout=go.Layout(height=250))
 macd_fig.add_trace(
     go.Scatter(
-        x=data.index,
-        y=data.ta.macd(close=data[("Close", ticker)])["MACD_12_26_9"],
+        x=fived_data.index,
+        y=fived_data.ta.macd(close=fived_data[("Close", ticker)])["MACD_12_26_9"],
         mode="lines",
         name="MACD Line",
     )
 )
 macd_fig.add_trace(
     go.Scatter(
-        x=data.index,
-        y=data.ta.macd(close=data[("Close", ticker)])["MACDs_12_26_9"],
+        x=fived_data.index,
+        y=fived_data.ta.macd(close=fived_data[("Close", ticker)])["MACDs_12_26_9"],
         mode="lines",
         name="Signal Line",
     )
@@ -157,25 +162,30 @@ macd_fig.add_trace(
 if show_bollinger:
     candle_fig.add_trace(
         go.Scatter(
-            x=data.index,
-            y=data.ta.bbands(close=data["Close", ticker])["BBL_5_2.0_2.0"],
+            x=oned_data.index,
+            y=oned_data.ta.bbands(close=oned_data["Close", ticker])["BBL_5_2.0_2.0"],
             name="Lower",
         )
     )
     candle_fig.add_trace(
         go.Scatter(
-            x=data.index,
-            y=data.ta.bbands(close=data["Close", ticker])["BBU_5_2.0_2.0"],
+            x=oned_data.index,
+            y=oned_data.ta.bbands(close=oned_data["Close", ticker])["BBU_5_2.0_2.0"],
             name="Upper",
         )
     )
     candle_fig.add_trace(
         go.Scatter(
-            x=data.index,
-            y=data.ta.bbands(close=data["Close", ticker])["BBM_5_2.0_2.0"],
+            x=oned_data.index,
+            y=oned_data.ta.bbands(close=oned_data["Close", ticker])["BBM_5_2.0_2.0"],
             name="Middle",
         )
     )
+rangebreaks = [dict(bounds=["sat", "mon"]), dict(bounds=[16, 9.5], pattern="hour")]
+
+candle_fig.update_xaxes(rangebreaks=rangebreaks)
+rsi_fig.update_xaxes(rangebreaks=rangebreaks)
+macd_fig.update_xaxes(rangebreaks=rangebreaks)
 # Example: Signal labeling exercise
 st.write("### Signal Labeling Exercise")
 st.write(
