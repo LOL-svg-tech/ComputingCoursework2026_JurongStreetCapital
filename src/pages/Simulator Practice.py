@@ -6,11 +6,17 @@ from alpaca.trading.client import TradingClient
 from alpaca.trading.requests import MarketOrderRequest, LimitOrderRequest
 from alpaca.trading.enums import OrderSide, TimeInForce
 from alpaca.common.exceptions import APIError
+import plotly.graph_objects as go
+import pandas as pd
 import yfinance as yf
+from alpaca.data.historical import StockHistoricalDataClient
+from alpaca.data.requests import StockLatestQuoteRequest, StockBarsRequest
+from alpaca.data import TimeFrame
+from datetime import datetime, timedelta, date
 
 
 
-
+dataclient = StockHistoricalDataClient(st.secrets["api_key"], st.secrets["secret_key"])
 client = TradingClient(st.secrets["api_key"], st.secrets["secret_key"])
 st.title("Terminal")
 
@@ -89,7 +95,7 @@ else:
 
 ##Sidebar Elements
 try:
-    sym = st.sidebar.text_input("Insert Ticker", "SPY")
+    sym = st.sidebar.text_input("Insert Ticker", "DLTR")
 except:
     st.error("insert a valid symbol pls")
 
@@ -103,11 +109,39 @@ qty = st.sidebar.number_input("Select Qty (Fractional orders are DAY only)")
 st.sidebar.button("Send order",on_click=limitOrder if orderType=="Limit(LMT)" else marketOrder)
 
 
+
+## Charts
+mthly = date.today() - timedelta(days=30)
+request_params = StockBarsRequest(
+                        symbol_or_symbols=sym,
+                        timeframe=TimeFrame.Day,
+                        start=mthly,)
+
+
+bars = dataclient.get_stock_bars(request_params)
+data = bars.df
+data = data.reset_index()
+candlestick = go.Candlestick(x=data["timestamp"],
+                                 open=data["open"],
+                                 high=data["high"],
+                                 low=data["low"],
+                                 close=data["close"])
+
+layout = go.Layout(title=f'Candlestick Chart for {sym}',
+                       xaxis=dict(title='Date'),
+                       yaxis=dict(title='Price'))
+
+fig = go.Figure(data=[candlestick], layout=layout)
+st.plotly_chart(fig)
+st.dataframe(data)
+
 ## Orders table
+st.write("Current Orders")
 try:
     st.dataframe(orders[["symbol","side","qty","status","time_in_force"]].rename(columns={"symbol":"Symbol","qty":"Qty","status":"Status","time_in_force":"Time-In-Force"}))
 except:
     st.dataframe(orders)
+st.write("Current Positions")
 try:
     st.dataframe(positions[["symbol","side","qty"]].rename(columns={"symbol":"Symbol","qty":"Qty","side":"Side"}))
 
