@@ -234,7 +234,7 @@ else:
             )
         ]
     )
-    fig.update_layout(title=f"Candlestick Chart for {sym}")
+    fig.update_layout(title=f"30 Day Candlestick Chart for {sym}")
 
 st.plotly_chart(fig)
 
