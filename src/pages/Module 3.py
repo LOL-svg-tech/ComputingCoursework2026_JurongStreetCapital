@@ -111,18 +111,18 @@ with open("sp500_tickers.txt", "r") as fin:
     for line in fin:
         tickers.append(line.rstrip("\n"))
 ticker = random.choice(tickers)
-fived_data = yf.download(ticker, period="5d", interval="5m")
-fived_data.index = fived_data.index.tz_convert("America/New_York")
-cutoff = fived_data.index[-1] - to_offset("1D")
-oned_data = fived_data[fived_data.index > cutoff]
+fiveday_data = yf.download(ticker, period="5d", interval="5m")
+fiveday_data.index = fiveday_data.index.tz_convert("America/New_York")
+cutoff = fiveday_data.index[-1] - to_offset("1D")
+oneday_data = fiveday_data[fiveday_data.index > cutoff]
 candle_fig = go.Figure(
     data=[
         go.Candlestick(
-            x=oned_data.index,
-            open=oned_data[("Open", ticker)],
-            high=oned_data[("High", ticker)],
-            low=oned_data[("Low", ticker)],
-            close=oned_data[("Close", ticker)],
+            x=oneday_data.index,
+            open=oneday_data[("Open", ticker)],
+            high=oneday_data[("High", ticker)],
+            low=oneday_data[("Low", ticker)],
+            close=oneday_data[("Close", ticker)],
             name="Candles",
         )
     ]
@@ -131,8 +131,8 @@ candle_fig = go.Figure(
 rsi_fig = go.Figure(
     data=[
         go.Scatter(
-            x=oned_data.index,
-            y=oned_data.ta.rsi(close=oned_data[("Close", ticker)]),
+            x=oneday_data.index,
+            y=oneday_data.ta.rsi(close=oneday_data[("Close", ticker)]),
             mode="lines",
         )
     ],
@@ -145,16 +145,16 @@ rsi_fig.add_hline(y=30, line_color="white")
 macd_fig = go.Figure(layout=go.Layout(height=250))
 macd_fig.add_trace(
     go.Scatter(
-        x=fived_data.index,
-        y=fived_data.ta.macd(close=fived_data[("Close", ticker)])["MACD_12_26_9"],
+        x=fiveday_data.index,
+        y=fiveday_data.ta.macd(close=fiveday_data[("Close", ticker)])["MACD_12_26_9"],
         mode="lines",
         name="MACD Line",
     )
 )
 macd_fig.add_trace(
     go.Scatter(
-        x=fived_data.index,
-        y=fived_data.ta.macd(close=fived_data[("Close", ticker)])["MACDs_12_26_9"],
+        x=fiveday_data.index,
+        y=fiveday_data.ta.macd(close=fiveday_data[("Close", ticker)])["MACDs_12_26_9"],
         mode="lines",
         name="Signal Line",
     )
@@ -162,22 +162,22 @@ macd_fig.add_trace(
 if show_bollinger:
     candle_fig.add_trace(
         go.Scatter(
-            x=oned_data.index,
-            y=oned_data.ta.bbands(close=oned_data["Close", ticker])["BBL_5_2.0_2.0"],
+            x=oneday_data.index,
+            y=oneday_data.ta.bbands(close=oneday_data["Close", ticker])["BBL_5_2.0_2.0"],
             name="Lower",
         )
     )
     candle_fig.add_trace(
         go.Scatter(
-            x=oned_data.index,
-            y=oned_data.ta.bbands(close=oned_data["Close", ticker])["BBU_5_2.0_2.0"],
+            x=oneday_data.index,
+            y=oneday_data.ta.bbands(close=oneday_data["Close", ticker])["BBU_5_2.0_2.0"],
             name="Upper",
         )
     )
     candle_fig.add_trace(
         go.Scatter(
-            x=oned_data.index,
-            y=oned_data.ta.bbands(close=oned_data["Close", ticker])["BBM_5_2.0_2.0"],
+            x=oneday_data.index,
+            y=oneday_data.ta.bbands(close=oneday_data["Close", ticker])["BBM_5_2.0_2.0"],
             name="Middle",
         )
     )
@@ -191,7 +191,7 @@ st.write("### Signal Labeling Exercise")
 st.write(
     "Look at the chart and label whether the signal is bullish, bearish, or neutral based on the indicators you toggled."
 )
-st.write(f"### {ticker} Candlestick Chart")
+st.write(f"### Candlestick Chart")
 st.plotly_chart(candle_fig)
 if show_rsi:
     st.write("### RSI")
