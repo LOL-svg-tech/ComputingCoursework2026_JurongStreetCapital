@@ -110,7 +110,10 @@ tickers = []
 with open("sp500_tickers.txt", "r") as fin:
     for line in fin:
         tickers.append(line.rstrip("\n"))
-ticker = random.choice(tickers)
+
+if "ticker" not in st.session_state:
+    st.session_state["ticker"] = random.choice(tickers)
+ticker = st.session_state["ticker"]
 fiveday_data = yf.download(ticker, period="5d", interval="5m")
 fiveday_data.index = fiveday_data.index.tz_convert("America/New_York")
 cutoff = fiveday_data.index[-1] - to_offset("1D")
