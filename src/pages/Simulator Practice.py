@@ -149,7 +149,7 @@ candlestick = go.Candlestick(
 )
 
 layout = go.Layout(
-    title=f"Candlestick Chart for {sym}",
+    title=f"30 Day Candlestick Chart for {sym}",
     xaxis=dict(title="Date"),
     yaxis=dict(title="Price"),
 )
