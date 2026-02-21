@@ -381,4 +381,4 @@ except:
 
 st.write("Account Data")
 st.write(account_data)
-st.dataframe(close_indicators)
+
