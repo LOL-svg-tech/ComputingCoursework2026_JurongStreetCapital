@@ -1,6 +1,12 @@
 import streamlit as st
 from openai import OpenAI
-import chromadb #enable vector database search to search for similar prompts#
+#############################################################
+#enable vector database search to search for similar prompts#
+#############################################################
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+import chromadb 
 
 ########
 #Header#
@@ -59,6 +65,7 @@ def retrieve(query, k=8):
    )
    docs = res["documents"][0] if res.get("documents") else []
    return "\n\n".join(docs)
+
 ################################################################################
 #Conserve chat history so that every new input has been contextualised by the AI
 ################################################################################
@@ -68,6 +75,7 @@ if "messages" not in st.session_state:
 for m in st.session_state.messages:
    with st.chat_message(m["role"]):
        st.markdown(m["content"])
+       
 ##############################
 #Provide chat input field box#
 ##############################
