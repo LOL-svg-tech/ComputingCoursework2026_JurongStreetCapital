@@ -14,6 +14,7 @@ from alpaca.data.requests import StockLatestQuoteRequest, StockBarsRequest
 from alpaca.data import TimeFrame
 import pandas_ta as ta
 from datetime import datetime, timedelta, date
+from alpaca.data import TimeFrame
 
 dataclient = StockHistoricalDataClient(st.secrets["api_key"], st.secrets["secret_key"])
 client = TradingClient(st.secrets["api_key"], st.secrets["secret_key"])
@@ -98,8 +99,9 @@ def symHider(df):
 def getBars(symbol, start):
     req = StockBarsRequest(
         symbol_or_symbols=symbol,
-        timeframe=TimeFrame.Day,
+        timeframe=TimeFrame.Minute,
         start=start,
+        limit=600
     )
     return dataclient.get_stock_bars(req).df.reset_index()
 
@@ -171,24 +173,27 @@ st.subheader(f"Current Price: {float(sym_info.fast_info.last_price):.2f}")
 
 
 ## Charts
-mthly = date.today() - timedelta(days=30)  # Display 30 days
-mthly_indicators = date.today() - timedelta(days=180)  # Get 180 days for MACD
-
-request_params = StockBarsRequest(
-    symbol_or_symbols=sym,
-    timeframe=TimeFrame.Day,
-    start=mthly,
-)
-
-request_params_indicators = StockBarsRequest(
-    symbol_or_symbols=sym,
-    timeframe=TimeFrame.Day,
-    start=mthly_indicators,
-)
+start = date.today() - timedelta(days=1)  # Display 3 days
+start_indicators = date.today() - timedelta(days=2)  # Get 30 days for MACD
 
 
-data = getBars(sym, mthly)
-data_indicators = getBars(sym, mthly_indicators)
+
+data = getBars(sym, start).set_index('timestamp').resample('5min').agg({
+    'open': 'first',
+    'high': 'max',
+    'low': 'min',
+    'close': 'last',
+    'volume': 'sum'
+}).dropna().reset_index()
+
+data_indicators = getBars(sym, start_indicators).set_index('timestamp').resample('5min').agg({
+    'open': 'first',
+    'high': 'max',
+    'low': 'min',
+    'close': 'last',
+    'volume': 'sum'
+}).dropna().reset_index()
+
 
 
 candlestick = go.Candlestick(
@@ -368,4 +373,4 @@ except:
 
 st.write("Account Data")
 st.write(account_data)
-
+st.dataframe(close_indicators)
