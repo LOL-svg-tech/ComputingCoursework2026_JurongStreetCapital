@@ -103,7 +103,7 @@ st.subheader("Interactive Indicator Learning")
 st.write(
     "You can experiment with indicators on charts and practice identifying signals."
 )
-# Example: Toggle indicators on a sample chart
+
 st.session_state["rsi"] = st.checkbox("Show RSI")
 st.session_state["macd"] = st.checkbox("Show MACD")
 st.session_state["bbands"] = st.checkbox("Show Bollinger Bands")
