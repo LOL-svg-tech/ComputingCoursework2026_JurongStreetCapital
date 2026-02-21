@@ -4,6 +4,7 @@ import random
 import plotly.graph_objects as go
 import pandas_ta as ta
 import pandas as pd
+import os
 
 st.title("Let's learn Trade!")
 
@@ -110,6 +111,8 @@ show_rsi = st.session_state["rsi"]
 show_macd = st.session_state["macd"]
 show_bollinger = st.session_state["bbands"]
 tickers = []
+base_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+ticker_path = os.path.join(base_path, "sp500_tickers.txt")
 with open("sp500_tickers.txt", "r") as fin:
     for line in fin:
         tickers.append(line.rstrip("\n"))
