@@ -38,11 +38,11 @@ timeInForce = {
     "At The Close(CLS)": TimeInForce.CLS,
 }
 
-sym_map = {"SST Athletics": "NKE",
-              "Dylan's Banh Mi": "MCD",
+sym_map = {"Jurong Street Capital": "SPY",
+              "SST Robotics": "AMD",
               "SST Computing": "MSFT",
               "SST Electronics": "NVDA",
-              "SST Taekwondo":"LMT"
+              "SST Taekwondo":"PLTR"
               
 }
 
@@ -184,7 +184,7 @@ data = getBars(sym, start).set_index('timestamp').resample('5min').agg({
     'low': 'min',
     'close': 'last',
     'volume': 'sum'
-}).dropna().reset_index()
+}).fillna(method="ffill").reset_index()
 
 data_indicators = getBars(sym, start_indicators).set_index('timestamp').resample('5min').agg({
     'open': 'first',
@@ -223,6 +223,11 @@ from plotly.subplots import make_subplots
 close = data["close"]
 close_indicators = data_indicators["close"]
 
+rangebreaks = [
+    dict(bounds=["sat", "mon"]),   
+    dict(bounds=[16, 9.5], pattern="hour") 
+]
+
 ##This was modified to work with the help of AI Model Big Pickle
 if show_bollinger:
     bbands_df = bbands_func(close)
@@ -232,7 +237,7 @@ if show_bollinger:
         shared_xaxes=True,
         vertical_spacing=0.1,
         row_heights=[0.7, 0.3],
-        subplot_titles=(f"Candlestick Chart for {sym}", "Bollinger Bands"),
+        subplot_titles=(f"5min Candlestick Chart for {choice}"),
     )
     fig.add_trace(
         go.Candlestick(
@@ -291,8 +296,9 @@ else:
             )
         ]
     )
-    fig.update_layout(title=f"30 Day Candlestick Chart for {choice}")
+    fig.update_layout(title=f"5min Candlestick Chart for {choice}")
 
+fig.update_xaxes(rangebreaks=rangebreaks)
 st.plotly_chart(fig)
 
 if show_rsi:
@@ -312,6 +318,7 @@ if show_rsi:
         rsi_fig.add_hline(y=30, line_color="green", line_dash="dash")
         rsi_fig.update_yaxes(range=[0, 100])
         rsi_fig.update_layout(height=250, title="RSI")
+        rsi_fig.update_xaxes(rangebreaks=rangebreaks)
         st.plotly_chart(rsi_fig)
 
 if show_macd:
@@ -337,6 +344,7 @@ if show_macd:
             )
         )
         macd_fig.update_layout(height=250, title="MACD")
+        macd_fig.update_xaxes(rangebreaks=rangebreaks)
         st.plotly_chart(macd_fig)
 ##This was modified to work with the help of AI Model Big Pickle
 
@@ -373,4 +381,4 @@ except:
 
 st.write("Account Data")
 st.write(account_data)
-st.dataframe(close_indicators)
+
