@@ -37,6 +37,16 @@ timeInForce = {
     "At The Close(CLS)": TimeInForce.CLS,
 }
 
+sym_map = {"SST Athletics": "NKE",
+              "Dylan's Banh Mi": "MCD",
+              "SST Computing": "MSFT",
+              "SST Electronics": "NVDA",
+              "SST Taekwondo":"LMT"
+              
+}
+
+rev_sym_map = {val: key for key, val in sym_map.items()}
+
 
 def marketOrderRequest(sym, qty, side, tif):
     return MarketOrderRequest(
@@ -60,32 +70,44 @@ def marketOrder():
     try:
         client.submit_order(order_data=req)
     except APIError as e:
-        st.warning(f"Please fill all fields correctly")
+        st.warning(f"Please fill all fields correctly {e}")
 
 
 def limitOrder():
     side = OrderSide.BUY if orderSide == "Buy" else OrderSide.SELL
-    req = limitOrderRequest(sym, qty, side, float(lmtPrice), tif)
+    req = limitOrderRequest(sym, qty, side, round(float(lmtPrice),2), tif)
     try:
         client.submit_order(order_data=req)
     except APIError as e:
-        st.warning("Fill all fields correctly")
+        st.warning(f"Fill all fields correctly {e}")
 
+def symHider(df):
+    if df is None or df.empty:
+        return df
+    displayed = df.copy()
+    if "symbol" in displayed.columns:
+        displayed["symbol"] = (
+            displayed["symbol"]
+            .map(rev_sym_map)
+            .fillna("Restricted")
+        )
+    displayed= displayed.rename(columns={"symbol": "Company"})
+    return displayed
 
 account = client.get_account()
 account_data = Util.to_dataframe(account)
 bal_chg = float(account.equity) - float(account.last_equity)
 bal = float(account.equity)
-positions = Util.to_dataframe(client.get_all_positions())
-orders = Util.to_dataframe(client.get_orders())
+positions = symHider(Util.to_dataframe(client.get_all_positions()))
+orders = symHider(Util.to_dataframe(client.get_orders()))
 cum_chg = float(account.equity) - float(100000)
 
-##Sidebar Elements
-try:
-    sym = st.sidebar.text_input("Insert sym", "DLTR")
-except:
-    st.error("insert a valid symbol pls")
 
+
+##Sidebar Elements
+
+choice = st.sidebar.selectbox("Select a Company",list(sym_map.keys()))
+sym = sym_map[choice]
 sym_info = yf.Ticker(sym)
 orderSide = st.sidebar.selectbox("Select Order Side", ["Buy", "Sell"])
 orderType = st.sidebar.selectbox("Select Order Type", ["Limit(LMT)", "Market(MKT)"])
@@ -103,9 +125,17 @@ if st.sidebar.toggle("Auto-Refresh"):
 
 # TOP OF THE PAGE THINGS ------------
 st.subheader(f"Current Portfolio Value: USD{bal:.2f}")
-if bal_chg >= 0:
+if bal_chg >= 0 and cum_chg >= 0:
     st.markdown(
         f"**Today's P/L:** :green[$ {bal_chg:.2f}], **Cumulative P/L** :green[${cum_chg:.2f}]"
+    )
+elif bal_chg >= 0 and cum_chg <= 0:
+    st.markdown(
+        f"**Today's P/L:** :green[$ {bal_chg:.2f}], **Cumulative P/L** :red[${cum_chg:.2f}]"
+    )
+elif bal_chg <= 0 and cum_chg >= 0:
+    st.markdown(
+        f"**Today's P/L:** :red[$ {bal_chg:.2f}], **Cumulative P/L** :green[${cum_chg:.2f}]"
     )
 else:
     st.markdown(
@@ -149,7 +179,7 @@ candlestick = go.Candlestick(
 )
 
 layout = go.Layout(
-    title=f"30 Day Candlestick Chart for {sym}",
+    title=f"30 Day Candlestick Chart for {choice}",
     xaxis=dict(title="Date"),
     yaxis=dict(title="Price"),
 )
@@ -167,6 +197,7 @@ from plotly.subplots import make_subplots
 close = data["close"]
 close_indicators = data_indicators["close"]
 
+##This was modified to work with the help of AI Model Big Pickle
 if show_bollinger:
     bbands_df = bbands_func(close)
     fig = make_subplots(
@@ -234,7 +265,7 @@ else:
             )
         ]
     )
-    fig.update_layout(title=f"30 Day Candlestick Chart for {sym}")
+    fig.update_layout(title=f"30 Day Candlestick Chart for {choice}")
 
 st.plotly_chart(fig)
 
@@ -281,18 +312,21 @@ if show_macd:
         )
         macd_fig.update_layout(height=250, title="MACD")
         st.plotly_chart(macd_fig)
-
+##This was modified to work with the help of AI Model Big Pickle
 
 ## Orders table
 st.write("Current Orders")
 try:
     st.dataframe(
-        orders[["symbol", "side", "qty", "status", "time_in_force"]].rename(
+        orders[["Company", "side", "qty", "status", "time_in_force","filled_avg_price","limit_price","order_type"]].rename(
             columns={
-                "symbol": "Symbol",
+                "Company": "Company",
                 "qty": "Qty",
+                "filled_avg_price":"Avg. Fill Price",
+                "limit_price":"Limit Price",
                 "status": "Status",
                 "time_in_force": "Time-In-Force",
+                "order_type":"Order Type"
             }
         )
     )
@@ -301,8 +335,8 @@ except:
 st.write("Current Positions")
 try:
     st.dataframe(
-        positions[["symbol", "side", "qty"]].rename(
-            columns={"symbol": "Symbol", "qty": "Qty", "side": "Side"}
+        positions[["Company", "avg_entry_price","unrealized_pl","side", "qty"]].rename(
+            columns={"Company": "Company","avg_entry_price":"Avg. Cost Price","unrealized_pl":"Unrealized P/L","qty": "Qty", "side": "Side"}
         )
     )
 
@@ -310,4 +344,7 @@ except:
     st.dataframe(positions)
 
 
+
+st.write("Account Data")
 st.write(account_data)
+
