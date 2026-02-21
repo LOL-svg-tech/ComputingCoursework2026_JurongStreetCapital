@@ -3,7 +3,7 @@ import yfinance as yf
 import random
 import plotly.graph_objects as go
 import pandas_ta as ta
-from pandas.tseries.frequencies import to_offset
+import pandas as pd
 
 st.title("Let's learn Trade!")
 
@@ -103,9 +103,12 @@ st.write(
     "You can experiment with indicators on charts and practice identifying signals."
 )
 # Example: Toggle indicators on a sample chart
-show_rsi = st.checkbox("Show RSI")
-show_macd = st.checkbox("Show MACD")
-show_bollinger = st.checkbox("Show Bollinger Bands")
+st.session_state["rsi"] = st.checkbox("Show RSI")
+st.session_state["macd"] = st.checkbox("Show MACD")
+st.session_state["bbands"] = st.checkbox("Show Bollinger Bands")
+show_rsi = st.session_state["rsi"]
+show_macd = st.session_state["macd"]
+show_bollinger = st.session_state["bbands"]
 tickers = []
 with open("sp500_tickers.txt", "r") as fin:
     for line in fin:
@@ -113,19 +116,21 @@ with open("sp500_tickers.txt", "r") as fin:
 
 if "ticker" not in st.session_state:
     st.session_state["ticker"] = random.choice(tickers)
+
 ticker = st.session_state["ticker"]
-fiveday_data = yf.download(ticker, period="5d", interval="5m")
-fiveday_data.index = fiveday_data.index.tz_convert("America/New_York")
-cutoff = fiveday_data.index[-1] - to_offset("1D")
-oneday_data = fiveday_data[fiveday_data.index > cutoff]
-candle_fig = go.Figure(
+five_day_data = yf.download(ticker, period="5d", interval="5m")
+five_day_data.index = five_day_data.index.tz_convert("America/New_York")
+unique_dates = pd.Series(five_day_data.index.date).unique()
+second_last_date = unique_dates[-2]
+second_last_day_data = five_day_data[five_day_data.index.date == second_last_date]
+initial_candle_fig = go.Figure(
     data=[
         go.Candlestick(
-            x=oneday_data.index,
-            open=oneday_data[("Open", ticker)],
-            high=oneday_data[("High", ticker)],
-            low=oneday_data[("Low", ticker)],
-            close=oneday_data[("Close", ticker)],
+            x=second_last_day_data.index,
+            open=second_last_day_data[("Open", ticker)],
+            high=second_last_day_data[("High", ticker)],
+            low=second_last_day_data[("Low", ticker)],
+            close=second_last_day_data[("Close", ticker)],
             name="Candles",
         )
     ]
@@ -134,8 +139,10 @@ candle_fig = go.Figure(
 rsi_fig = go.Figure(
     data=[
         go.Scatter(
-            x=oneday_data.index,
-            y=oneday_data.ta.rsi(close=oneday_data[("Close", ticker)]),
+            x=second_last_day_data.index,
+            y=second_last_day_data.ta.rsi(
+                close=second_last_day_data[("Close", ticker)]
+            ),
             mode="lines",
         )
     ],
@@ -148,45 +155,53 @@ rsi_fig.add_hline(y=30, line_color="white")
 macd_fig = go.Figure(layout=go.Layout(height=250))
 macd_fig.add_trace(
     go.Scatter(
-        x=fiveday_data.index,
-        y=fiveday_data.ta.macd(close=fiveday_data[("Close", ticker)])["MACD_12_26_9"],
+        x=five_day_data.index,
+        y=five_day_data.ta.macd(close=five_day_data[("Close", ticker)])["MACD_12_26_9"],
         mode="lines",
         name="MACD Line",
     )
 )
 macd_fig.add_trace(
     go.Scatter(
-        x=fiveday_data.index,
-        y=fiveday_data.ta.macd(close=fiveday_data[("Close", ticker)])["MACDs_12_26_9"],
+        x=five_day_data.index,
+        y=five_day_data.ta.macd(close=five_day_data[("Close", ticker)])[
+            "MACDs_12_26_9"
+        ],
         mode="lines",
         name="Signal Line",
     )
 )
 if show_bollinger:
-    candle_fig.add_trace(
+    initial_candle_fig.add_trace(
         go.Scatter(
-            x=oneday_data.index,
-            y=oneday_data.ta.bbands(close=oneday_data["Close", ticker])["BBL_5_2.0_2.0"],
+            x=second_last_day_data.index,
+            y=second_last_day_data.ta.bbands(
+                close=second_last_day_data["Close", ticker]
+            )["BBL_5_2.0_2.0"],
             name="Lower",
         )
     )
-    candle_fig.add_trace(
+    initial_candle_fig.add_trace(
         go.Scatter(
-            x=oneday_data.index,
-            y=oneday_data.ta.bbands(close=oneday_data["Close", ticker])["BBU_5_2.0_2.0"],
+            x=second_last_day_data.index,
+            y=second_last_day_data.ta.bbands(
+                close=second_last_day_data["Close", ticker]
+            )["BBU_5_2.0_2.0"],
             name="Upper",
         )
     )
-    candle_fig.add_trace(
+    initial_candle_fig.add_trace(
         go.Scatter(
-            x=oneday_data.index,
-            y=oneday_data.ta.bbands(close=oneday_data["Close", ticker])["BBM_5_2.0_2.0"],
+            x=second_last_day_data.index,
+            y=second_last_day_data.ta.bbands(
+                close=second_last_day_data["Close", ticker]
+            )["BBM_5_2.0_2.0"],
             name="Middle",
         )
     )
 rangebreaks = [dict(bounds=["sat", "mon"]), dict(bounds=[16, 9.5], pattern="hour")]
 
-candle_fig.update_xaxes(rangebreaks=rangebreaks)
+initial_candle_fig.update_xaxes(rangebreaks=rangebreaks)
 rsi_fig.update_xaxes(rangebreaks=rangebreaks)
 macd_fig.update_xaxes(rangebreaks=rangebreaks)
 # Example: Signal labeling exercise
@@ -194,8 +209,8 @@ st.write("### Signal Labeling Exercise")
 st.write(
     "Look at the chart and label whether the signal is bullish, bearish, or neutral based on the indicators you toggled."
 )
-st.write(f"### Candlestick Chart")
-st.plotly_chart(candle_fig)
+st.write("### Candlestick Chart")
+st.plotly_chart(initial_candle_fig)
 if show_rsi:
     st.write("### RSI")
     st.plotly_chart(rsi_fig)
@@ -204,18 +219,59 @@ if show_macd:
     st.plotly_chart(macd_fig)
 
 
-signal_options = ["Bullish", "Bearish", "Neutral"]
-signal_choice = st.radio("Your Signal Choice:", signal_options)
+signal_options = ["Bullish", "Bearish"]
+
+st.session_state["signal choice"] = st.radio("Your Signal Choice:", signal_options)
+signal_choice = st.session_state["signal choice"]
 st.write(f"You selected: **{signal_choice}**")
+signal_confirm = st.button("Confirm Choice")
+if signal_confirm:
+    latest_close = five_day_data[("Close", ticker)].iloc[-1]
+    second_last_day_close = second_last_day_data[("Close", ticker)].iloc[-1]
+    if signal_choice == "Bullish" and latest_close > second_last_day_close:
+        st.success("Good job, you identified the trend correctly")
+    elif signal_choice == "Bearish" and latest_close < second_last_day_close:
+        st.success("Good job, you identified the trend correctly")
+    else:
+        st.error(
+            "Aw man, you got it wrong. But don't fret, wrong signals are very common in real life trading"
+        )
+    feedback_candle_fig = go.Figure(
+        data=[
+            go.Candlestick(
+                x=five_day_data.index,
+                open=five_day_data[("Open", ticker)],
+                high=five_day_data[("High", ticker)],
+                low=five_day_data[("Low", ticker)],
+                close=five_day_data[("Close", ticker)],
+                name="Candles",
+            )
+        ]
+    )
+    feedback_candle_fig.add_trace(
+        go.Scatter(
+            x=[second_last_day_data.index[-1]],
+            y=[second_last_day_close],
+            mode="markers",
+            marker=dict(color="green", size=10),
+            name="4-Day Close",
+        )
+    )
 
+    feedback_candle_fig.add_trace(
+        go.Scatter(
+            x=[five_day_data.index[-1]],
+            y=[latest_close],
+            mode="markers",
+            marker=dict(color="red", size=10),
+            name="Latest Close",
+        )
+    )
+    feedback_candle_fig.update_xaxes(rangebreaks=rangebreaks)
+    st.plotly_chart(feedback_candle_fig)
+    st.write("Click refresh to move on to the next chart")
+continuity = st.button("Refresh")
+if continuity:
+    st.session_state["ticker"] = random.choice(tickers)
+    st.rerun()
 st.divider()
-st.write("### Mini Challenge")
-st.write("Combine indicators to find a potential trade setup. Consider:")
-st.markdown("""
-- Momentum (RSI)
-- Trend confirmation (MACD)
-- Volatility (Bollinger Bands)
-""")
-st.write("Try to spot a confluence where all three indicators agree.")
-
-st.success("Great! You've completed Module 3 on Indicator-Based Trading. 🎉")
