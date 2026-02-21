@@ -1,0 +1,124 @@
+Trading Education Syllabus
+Program Objective:
+To provide a structured, progressive trading education that builds strong financial foundations, develops technical analysis skills, and introduces indicator-based trading while preventing common beginner and amateur mistakes.
+###################################
+Module 1: Introduction to Trading#
+###################################
+Goal: Build core financial literacy and prevent beginner mistakes
+Instructor Lead: Palani
+Learning Outcomes
+By the end of this module, learners will be able to:
+-Distinguish clearly between trading and investing
+-Understand major financial markets and their characteristics
+-Apply foundational risk management principles
+-Recognize why most beginners fail
+
+Topics Covered
+1. Trading vs Investing
+-Definition and purpose of trading
+-Definition and purpose of investing
+-Time horizon comparison
+-Risk exposure and volatility differences
+
+2. Financial Markets Overview
+-Stocks
+-Exchange-Traded Funds (ETFs)
+-Foreign Exchange (Forex)
+-Cryptocurrencies
+
+3. Order Types
+-Market Orders
+-Limit Orders
+-When and why each order type is used
+
+4. Risk Management Fundamentals
+-Stop Loss and Take Profit concepts
+-Risk–Reward Ratio
+-Position sizing using fixed percentage risk
+
+5. Why Most Traders Lose Money
+-Emotional decision-making
+-Lack of risk control
+-Overtrading
+-Absence of a structured plan
+-Interactive Elements
+ -Order-type simulator with price movement only
+ -Risk calculator using adjustable sliders
+
+#########################################
+Module 2: Technical Analysis Foundations#
+#########################################
+Goal: Teach learners how to read and interpret price action
+Instructor Lead: Palani
+
+Learning Outcomes
+-By the end of this module, learners will be able to:
+-Read and interpret candlestick charts
+-Identify market trends and ranges
+
+Topics Covered
+1. Candlestick Charts
+-OHLC (Open, High, Low, Close) structure
+-Bullish versus bearish candles
+-Candle psychology
+
+2. Market Trends
+-Uptrends
+-Downtrends
+-Ranging markets
+
+
+
+##################################################
+Module 3: Indicator-Based Trading (Amateur Level)#
+##################################################
+Goal: Teach proper indicator usage and avoid common amateur errors
+Instructor Lead: Dylan
+
+Learning Outcomes
+-By the end of this module, learners will be able to:
+-Understand the intended purpose of indicators
+-Apply indicators correctly within market context
+-Avoid over-reliance on single indicators
+-Identify low-quality indicator signals
+
+Topics Covered
+1. Indicator Purpose vs Reality
+-What indicators are designed to show
+-Common misconceptions
+
+2. Relative Strength Index (RSI)
+-Momentum interpretation
+-Mean reversion concepts
+-Overbought and oversold limitations
+
+3. MACD
+-Trend confirmation
+-Momentum shifts
+-Signal line interpretation
+
+4. Bollinger Bands
+-Volatility measurement
+-Expansion and contraction
+-False breakout risks
+
+5. Indicator Confluence
+-Combining indicators responsibly
+-Why one indicator is never sufficient
+
+6. Common Indicator Mistakes
+-Indicator stacking
+-Late trade entries
+-Curve fitting and over-optimization
+
+7.Interactive Elements
+-Indicator toggle functionality on live charts
+-Signal labeling exercises
+-Indicator-based trading challenges
+
+##############
+Program Notes#
+##############
+This syllabus is strictly educational and does not provide financial advice.
+Learners are encouraged to focus on process, discipline, and risk management over profits.
+Progression to advanced modules should occur only after mastery of prior material.

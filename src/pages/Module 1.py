@@ -11,11 +11,11 @@ st.title("Let's learn Trade!")
 
 
 st.divider()
-
+st.subheader("For all interactive questions, do check with our AI whether your prediction is correct.")
 
 st.header(
 '''
-Introduction to Trading
+Article 1: Introduction to Trading
 ''')
 
 
@@ -24,13 +24,13 @@ Introduction to Trading
 ##########################
 st.subheader("Terminologies")
 st.write("Before we dive into trading, it's important to differentiate between these 3 terminolgies that are often confused by many beginners:")
-col1, col2, col3  = st.columns(3)
-col1.badge("Saving", color = "blue")
-col1.write("It is the act of allocating money for future use, rather than spending it immediately.")
-col2.badge("Trading", color = "green")
-col2.write("It is the act of buying and selling assets (something you own) with the hope of getting a profit. For example, let's take a retail item such as a bicycle. Let's say a person buys a bicycle for 100 SGD. He then finds his friend who wants the same bicycle. He sells this bicycle for 120 SGD. Now he has traded a bicycle for 20 SGD profit")
-col3.badge("Investment", color = "red")
-col3.write("It is essentially similar to trading but with a longer timeframe. It involves buying assests with a hope of getting profit in the future such as company's shares, bonds and stocks. You can learn this in deatil at the investing tab.")
+choices1 = ["Being thrifty", "Allocating money for future use", "Investing a lot of money in the bank for profit"]
+st.badge("Saving", color = "blue")
+st.selectbox("What is the definition", options=choices1)
+st.badge("Trading", color = "green")
+st.radio("What does it involve?", ["Buying an object at discount", "Buying something at lower price and selling at higher price", "Exchanging assets with others"])
+st.badge("Investment", color = "red")
+st.multiselect("How is it different from trading", ["The time duration is longer", "It is specifically for companies", "It is only for physical and tangible objects"])
 
 
 st.space()
@@ -40,27 +40,21 @@ st.divider()
 # Part 2 - Why Trading? #
 #########################
 st.subheader("Why do people trade?")
-st.write("In the financial world, 3 main parties involve in trading:")
+st.write("Based on statistics there are 3 reasons")
 indiv, busi, govt = st.tabs(["Individuals", "Businesses", "Government"])
 
+indiv.metric("Education", "40%", "Expose to various markets")
+indiv.metric("Profit", "5%", "Make a living out of it")
+indiv.metric("Entertainment", "10%", "Find satisfaction and as a recreation")
 
-indiv.write("Individuals trade for a variety of reason ranging from eductional purposes to making profits to run their households. ")
-indiv.write("For Education: Individuals can learn about the trading market by analysing the general trends, predicting the right time to sell their assets. They may do it gain early exposure before moving on to bigger markets and assets that hold more value. ")
-indiv.write("For income: They may do it a business hoping to make side profits that can be accumulated over the years as well as to increase their overall net worth. ")
-indiv.write("For entertainment: Some even trade for entertainment, as they feel joy and satisfied in knowing that their market value predictions were right")
-
-
-busi.write("There are infact many reasons why businesses trade. However, for the sake of simplicity, let's use these 4 reasons to build up our knowledge, later on")
-busi.write("Reducing potential risks: Businesses trade to grow revenue (money earn by selling goods). Businesses especially Small and Medium Enterprises (SMEs) have employees to trade assests such as stock to get profit so that in the event that their main business flops, they can use these profit to survive. ")
-busi.write("Competition: They can increase their net worth and stay ahead of competition by driving through innovation and buying new goods.")
-busi.write("Reputation: To build reputation and image for their brands and products.")
-busi.write("Disposal of goods: When businesses manufacture more than what they typially sell and do not have the capacity to store them, they might trade to distribute these goods taht are in surplus")
+busi.image("https://www.fpmarkets.com/assets/images/blogs/risk.png")
+busi.image("https://cdn.educba.com/academy/wp-content/uploads/2024/03/Essay-on-Competition.jpg")
+busi.image("https://thumbs.dreamstime.com/b/reputation-icon-monochrome-simple-community-templates-web-design-infographics-line-element-symbol-246513236.jpg")
 
 
-govt.write("The main reason behind why governments trade is to gain profit so that they can improve the quality of infrastructure and facilities for their people so as to improve their quality of life.")
-govt.write("In countries like Singapore whee natural resources are scarce, trading can provide profits to gain access to these resources that tehy can use to improve their country. ")
-govt.write("With more profits for the government, it can also lead to decline in consumer taxes for the people, cost of living which is beneficial for the people.")
-govt.write("Not only that, it creates trust and support wihin the government and the companies as both are contributing to the economy. And these profits if given to other countries as funds or support can create political and regional stability.")
+govt.write("Obtain Profits so that they can privde people with resources")
+govt.write("Not only that, it creates trust and support of the government with people") 
+govt.write("Help other countries with funding for emergencies using these profits")
 
 
 
@@ -73,8 +67,10 @@ st.divider()
 st.subheader("The relationship between inflation and trading")
 time, risk = st.columns(2, gap = "medium")
 time.badge("Time Horizon", color = "blue")
+time.image("https://tfagroup.co.uk/wp-content/uploads/2022/04/time-horizonsgold.jpg")
 time.write("Investing is a Long Term Horizon where wealth is accumulated over a long period of time in years or decades. Whereas Trading is a Short Term Horizon where assets are bought and sold within a short period of time such as days, weeks or months.")
 risk.badge("Risk Volatility", color = "red")
+risk.image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSieBS8c-jXHuCxX8bYc2WKRycYE165fKFvQ&s")
 risk.write("The risks involved in investing is lower as the timeframe is longer to recover from losses. People exploit this volatility to earn high quickly while risking their earnings if prices fall. Whereas investing is more reliable as it does not cause significant losses even if the market falls due to the accumulated wealth.")
 
 st.space()
@@ -83,16 +79,19 @@ st.divider()
 ############################
 #Part 4 - Financial Markets#
 ############################
-st.subheader("Financial Markets")
-etf, forex, crypto = st.tabs(["ETFs", "Forex", "Cryptocurrency"])
-etf.write("ETFs or Exchange Traded Funds is a basket of multiple assets, providing flexibility and convenience while Trading. They reduce company-specific risks.They can be traded even on days when markets fluctuate which can't be done with mutual assets")
-etf.write("Some examples include government bonds, commodities like gold and even other countries' currencies.")
-forex.write("Forex or Foreign-Exhange is a global marketplace for exchanging currencies. It allows multiple stakeholders from individuals to businesses to convert their money for international trade.")
-forex.write("Do note that unlike other markets, forex markets are highly volatile due to changing geopolitics and economic situations of various countries.")
-forex.write("Fun Fact: Do you know that the commonly exchanged currencies are USD, EUR, JPY and GBP?")
-crypto.write("Cryptocurrencies is a decentralised system where the autonomy of the markets are not controlled by commercial banks and government.")
-crypto.write("It used blockchain technology which digitally tracks and monitors online transactions and are operated digitally with no physical means.")
-crypto.write("The famous type of cryptocurrency is Bitcoin which is the 1st system used since 2009 which has the highest value and is highly recognised.")
+st.subheader("Financial Markets (Choose the market which best matches the description)")
+
+lst = ["Exchange Traded Funds (ETF)", "Foreign-Exhange (Forex)", "Cryptocurrencies"]
+st.segmented_control("Basket of multiple assets, providing flexibility and convenience while Trading. Reduce company-specific risks.", lst)
+st.badge("Some examples include government bonds, commodities like gold and even other countries' currencies.", color = "blue")
+st.space()
+st.segmented_control("A global marketplace for exchanging currencies. It allows multiple stakeholders from individuals to businesses to convert their money for international trade.", lst)
+st.badge("Do note that unlike other markets, they are highly volatile due to changing geopolitics and economy of countries.", color = "green")
+st.badge("Commonly exchanged currencies are USD, EUR, JPY and GBP?", color = "green")
+st.space()
+st.segmented_control("Decentralised system where the autonomy of the markets are not controlled by commercial banks and government.", lst)
+st.badge("It uses blockchain technology which digitally tracks and monitors online transactions", color = "violet")
+st.badge("The famous type is Bitcoin which is the 1st system used since 2009", color = "violet")
 
 st.space()
 st.divider()
@@ -116,19 +115,20 @@ st.divider()
 #Part 6 - Risk Management#
 ##########################
 st.subheader("Risk Management")
-st.caption("Why do most beginners lose money despite being careful with their decisions?")
+st.subheader("Choose the description which you feel is correct")
+
 st.badge("1)Emotional Discipline", color = "green")
-st.write("Many traders are unable to regulate their emotions as they are in the constant fear of losing money. This fear can cause them to make wrong decisions.")
-st.write("Thus many resort to revenge-trading whereby they trade quickly to earn back the money that they lost.")
-st.write("On the other hand, those who have earned money at first few trades, do not stick to their structure and deviate away from it losing money")
-st.write("in the process.")
+with st.popover("Select the definition"):
+    x = st.radio("Choose", ["Constant Fear of losing money", "Being overconfident of making profits", "Making decisions with structure and not emotions"])
+st.write(x)
 st.space()
 st.badge("2)Lack of Knowledge ", color = "red")
-st.write("Many beginners mistake trading for obtaining easy money. As such without proper training and fundamental analysis of the market,")
-st.write("they make careless decisions by following trends or moves made by other brokers or agents within the market blindly.")
+with st.popover("What is NOT a possible factor?"):
+    x = st.pills("Consequences", ["Following other traders blindly", "Underestimating liquidity of market value", "Being exposed to various courses on trading"])
+st.write(x)
 st.space()
-st.badge("3)Taxes on Profits", color = "yellow")
-st.write("Trading excessively increases taxes and brokerage fees which impact  profits.")
+st.badge("*3)Taxes on Profits", color = "yellow")
+st.write("Trading excessively increases taxes and brokerage fees which impact profits.")
 
 st.space()
 st.divider()
@@ -137,20 +137,17 @@ st.divider()
 #Part 7 - Risk Factor Profits#
 ##############################
 st.subheader("Mathematical Calculation of Risk Factors in Trading")
-stop, position = st.tabs(["Stop Loss and Take profit", "Position-Sizing(fixed)"])
 
 with st.popover("Calculate Risk-Reward Ratio"):
-    st.badge("Step 1: Entry Price - Stop-Loss Price", color = "gray")
+    st.badge("Step 1: Entry Price - Stop-Loss Price", color = "yellow")
     st.markdown("This is the maximum amaount you are willing to lose")
     st.space()
-    st.badge("Step 2: Take-Profit Price - Entry Price", color = "gray")
+    st.badge("Step 2: Take-Profit Price - Entry Price", color = "yellow")
     st.markdown("This is the target profit you are willing to make")
     st.space()
-    st.badge("Divide the 1st value by 2nd value", color = "gray")
+    st.badge("Divide the 1st value by 2nd value", color = "yellow")
     st.markdown("If the ratio is more than 1, the chances are more favourable to you.")
-stop.write("Stop-loss Take-Profit Ratio is also known as Risk-Reward Ratio.")
-stop.write("Stop loss is desined to protect a trader's capital in case the market moves against them. It does so by automatically exiting the position in market, thus reducing potential losses.")
-stop.write("Take-Profit locks in the profits gained by a particular margin. It caps the profits earned to reduce greed which can lead to reversal potential losses.")
-stop.write("It strengthens the discpline of traders by ensuring they trade passively without the need to monitor the markets. On top of that, it helps them to not make impulsive decisions.")
-
-position.write("")
+st.write("Stop-loss Take-Profit Ratio is also known as Risk-Reward Ratio.")
+st.write("Stop loss is desined to protect a trader's capital in case the market moves against them. It does so by automatically exiting the position in market, thus reducing potential losses.")
+st.write("Take-Profit locks in the profits gained by a particular margin. It caps the profits earned to reduce greed which can lead to reversal potential losses.")
+st.write("It strengthens the discpline of traders by ensuring they trade passively without the need to monitor the markets. On top of that, it helps them to not make impulsive decisions.")
