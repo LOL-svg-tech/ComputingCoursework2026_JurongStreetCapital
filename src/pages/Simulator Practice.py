@@ -94,12 +94,36 @@ def symHider(df):
     displayed= displayed.rename(columns={"symbol": "Company"})
     return displayed
 
-account = client.get_account()
+@st.cache_data(ttl=60)
+def getBars(symbol, start):
+    req = StockBarsRequest(
+        symbol_or_symbols=symbol,
+        timeframe=TimeFrame.Day,
+        start=start,
+    )
+    return dataclient.get_stock_bars(req).df.reset_index()
+
+@st.cache_data(ttl=5)
+def getOrders():
+    return Util.to_dataframe(client.get_orders())
+
+@st.cache_data(ttl=5)
+def getPositions():
+    return Util.to_dataframe(client.get_all_positions())
+
+@st.cache_data(ttl=5)
+def getAccount():
+    return client.get_account()
+
+
+
+
+account = getAccount()
 account_data = Util.to_dataframe(account)
 bal_chg = float(account.equity) - float(account.last_equity)
 bal = float(account.equity)
-positions = symHider(Util.to_dataframe(client.get_all_positions()))
-orders = symHider(Util.to_dataframe(client.get_orders()))
+positions = symHider(getPositions())
+orders = symHider(getOrders())
 cum_chg = float(account.equity) - float(100000)
 
 
@@ -163,12 +187,9 @@ request_params_indicators = StockBarsRequest(
 )
 
 
-bars = dataclient.get_stock_bars(request_params)
-data = bars.df
-data = data.reset_index()
+data = getBars(sym, mthly)
+data_indicators = getBars(sym, mthly_indicators)
 
-bars_indicators = dataclient.get_stock_bars(request_params_indicators)
-data_indicators = bars_indicators.df.reset_index()
 
 candlestick = go.Candlestick(
     x=data["timestamp"],
