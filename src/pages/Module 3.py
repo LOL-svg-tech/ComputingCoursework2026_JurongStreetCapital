@@ -4,7 +4,6 @@ import random
 import plotly.graph_objects as go
 import pandas_ta as ta
 import pandas as pd
-import os
 
 st.title("Let's learn Trade!")
 
@@ -648,13 +647,13 @@ rsi_fig = go.Figure(
             mode="lines",
         )
     ],
-    layout=go.Layout(height=250),
+    layout=go.Layout(height=400),
 )
 rsi_fig.update_yaxes(range=[0, 100])
 rsi_fig.add_hline(y=70, line_color="white")
 rsi_fig.add_hline(y=30, line_color="white")
 
-macd_fig = go.Figure(layout=go.Layout(height=250))
+macd_fig = go.Figure(layout=go.Layout(height=400))
 macd_fig.add_trace(
     go.Scatter(
         x=five_day_data.index,
@@ -777,4 +776,4 @@ if continuity:
     st.session_state["ticker"] = random.choice(tickers)
     st.rerun()
 st.divider()
-print(tickers)
+
