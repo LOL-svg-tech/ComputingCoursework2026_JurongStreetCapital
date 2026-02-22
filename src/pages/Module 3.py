@@ -634,8 +634,10 @@ initial_candle_fig = go.Figure(
             close=second_last_day_data[("Close", ticker)],
             name="Candles",
         )
-    ]
+    ],
+    layout=go.Layout(height=500),
 )
+
 
 rsi_fig = go.Figure(
     data=[
@@ -647,13 +649,13 @@ rsi_fig = go.Figure(
             mode="lines",
         )
     ],
-    layout=go.Layout(height=400),
+    layout=go.Layout(height=300),
 )
 rsi_fig.update_yaxes(range=[0, 100])
 rsi_fig.add_hline(y=70, line_color="white")
 rsi_fig.add_hline(y=30, line_color="white")
 
-macd_fig = go.Figure(layout=go.Layout(height=400))
+macd_fig = go.Figure(layout=go.Layout(height=300))
 macd_fig.add_trace(
     go.Scatter(
         x=five_day_data.index,
@@ -776,4 +778,3 @@ if continuity:
     st.session_state["ticker"] = random.choice(tickers)
     st.rerun()
 st.divider()
-
