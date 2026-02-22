@@ -42,7 +42,7 @@ st.subheader("Determining market structure")
 up, down, range = st.tabs(["Uptrend", "Downtrend", "Ranges"])
 
 
-range.write("The range of a market, it is a mouthful of words, but it is defined as the the Highest Price - Lowest Price within a certain timeframe")
+range.write("The range of a symbol, it is a mouthful of words, but it is defined as the the Highest Price - Lowest Price within a certain timeframe")
 range.write("We can use the range to determine thing ssuch as Volatility, if there is a higher range, prices have more space to jump around, and this means that it is more volatile.")
 range.write("We can also use ranges to determine the support/resistance levels")
 range.image("https://www.investopedia.com/thmb/kqBSGb0bXZ0mXqZ315yoGMg-xP0=/750x0/filters:no_upscale():max_bytes(150000):strip_icc()/dotdash_Final_Support_and_Resistance_Basics_Aug_2020-01-1c737e0debbe49a88d79388977f33b0c.jpg")
