@@ -1,9 +1,68 @@
 import streamlit as st
-
+import yfinance as yf
+import plotly.graph_objects as go
 st.title("Let's learn Trading!")
 
 st.divider()
 # divider for divider
+
+
+# Various data pulls and non UI things
+res_data = yf.download(
+    "AMZN",
+    start="2006-03-01",
+    end="2006-08-01",
+    interval="1d",
+    auto_adjust=False
+)
+res_fig = go.Figure(
+    data=[
+        go.Candlestick(
+            x=res_data.index,
+            open=res_data[("Open", "AMZN")],
+            high=res_data[("High", "AMZN")],
+            low=res_data[("Low", "AMZN")],
+            close=res_data[("Close", "AMZN")],
+            name="Candles",
+        )
+    ],
+    layout=go.Layout(height=500),
+)
+res_fig.add_hline(
+    y=1.95,
+    line_dash="dash",
+    line_color="blue",
+    line_width=2,
+    annotation_text="Resistance at $1.95 for AMZN (Adjusted for Stock Split)",
+)
+sup_data = yf.download(
+    "BLK",
+    start="2023-12-08",
+    end="2024-06-25",
+    interval="1wk",   
+    auto_adjust=False
+)
+sup_fig = go.Figure(
+    data=[
+        go.Candlestick(
+            x=sup_data.index,
+            open=sup_data[("Open", "BLK")],
+            high=sup_data[("High", "BLK")],
+            low=sup_data[("Low", "BLK")],
+            close=sup_data[("Close", "BLK")],
+            name="Candles",
+        )
+    ],
+    layout=go.Layout(height=500),
+)
+sup_fig.add_hline(
+    y=742,
+    line_dash="dash",
+    line_color="blue",
+    line_width=2,
+    annotation_text="Support at $742 for BLK",
+)
+
 
 st.header("Article 2: Technical Analysis Foundations")
 st.subheader(
@@ -59,15 +118,11 @@ range.write(
     "We can use the range to determine thing ssuch as Volatility, if there is a higher range, prices have more space to jump around, and this means that it is more volatile."
 )
 range.write("We can also use ranges to determine the support/resistance levels")
-range.image(
-    "https://www.investopedia.com/thmb/kqBSGb0bXZ0mXqZ315yoGMg-xP0=/750x0/filters:no_upscale():max_bytes(150000):strip_icc()/dotdash_Final_Support_and_Resistance_Basics_Aug_2020-01-1c737e0debbe49a88d79388977f33b0c.jpg"
-)
+range.plotly_chart(res_fig)
 range.write(
-    "In this example, notice how the top of the range acts as a 'resistance' level where price cannot break through. The inverse applies as shown below"
+    "In this example, notice how the top of the range acts as a 'resistance' level where price cannot break through. The inverse applies as shown below which is the support level"
 )
-range.image(
-    "https://www.investopedia.com/thmb/y7FneUCq0_elrB_K7f-1ToBYBGk=/750x0/filters:no_upscale():max_bytes(150000):strip_icc()/dotdash_Final_Support_and_Resistance_Basics_Aug_2020-02-fc5a37801b9944a6bc17886b19c3ea14.jpg"
-)
+range.plotly_chart(sup_fig)
 up.write(
     "In an uptrend, prices are usually following a structure of Higher Highs, and Higher Lows"
 )
