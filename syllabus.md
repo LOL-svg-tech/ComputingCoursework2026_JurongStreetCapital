@@ -86,3 +86,4 @@ The syllabus avoids Level II / order flow data and focuses on **price-based anal
 - Signal labeling challenges  
 - Indicator-based trading scenarios  
 
+---
