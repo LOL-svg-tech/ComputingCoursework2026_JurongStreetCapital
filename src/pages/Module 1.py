@@ -3,7 +3,7 @@ import streamlit as st
 ##################
 # Title and Header#
 ##################
-st.title("Let's learn Trade!")
+st.title("Let's learn Trading!")
 
 
 st.divider()

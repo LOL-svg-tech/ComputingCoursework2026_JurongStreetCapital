@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.title("Let's learn Trade!")
+st.title("Let's learn Trading!")
 
 st.divider()
 # divider for divider
@@ -71,8 +71,26 @@ range.image(
 up.write(
     "In an uptrend, prices are usually following a structure of Higher Highs, and Higher Lows"
 )
+up.image("https://www.binaryoptions.com/wp-content/uploads/Uptrend-trendline-FTSE-100-Index-Chart.png")
+up.write("Image provided by binaryoptions.com")
 down.write(
     "In an downtrend, prices are usually following a structure of Lower Highs, and Lower Lows"
 )
+down.image("https://www.binaryoptions.com/wp-content/uploads/downtrend-with-lower-lows-and-lower-highs.png")
+down.write("Image provided by binaryoptions.com")
 
 # Add images and descriptions with tabs
+
+st.subheader("Chart Timeframes and Bias")
+st.markdown("In trading charts, there are multiple timeframes available, and using **higher/lower** timeframes can be used to determine existing market bias")
+st.markdown("**Market Bias**: It is the market's overall direction or inclination towards a specific direction either when prices go up or down. It can be obtained through using different timeframes and technical analysis")
+st.markdown("A **Higher** timeframe: this is defined as a when a candle represents a longer period")
+st.markdown("A **Lower** timeframe: this is defined as when a candle represents a shorter period")
+st.markdown("""Here are some common combinations for different types of traders: 
+            
+- Day Traders(People who trade within a single day), **Daily(1d)** for market direction(Longer term trends) + **(1H/30min)** for structure(Think about shorter term market trends) and **(15min/5m)** for entries(When you buy and sell)
+- Swing Traders(People who aren't as active as day traders and trade within the week), **Weekly(1W)** for market direction + **(1d)** for structure) and **(4h/1h)** for entries
+            
+We can use the stacking of timeframes to avoid losing to much more stronger, longer-timeframe market movements during trading, and most importantly identify the market context which are the  trend and Support and Resistance (SR) levels. And when searching for entries(best prices to enter a position) we use Lower Timeframes combined with Technical Analysis to buy at the best price. This is especially important for more active traders, as some times a difference of a few dollars in the stock price can mean earning or losing for the day!
+""")
+

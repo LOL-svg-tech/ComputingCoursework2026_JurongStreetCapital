@@ -2,10 +2,10 @@ import pickle
 from pathlib import Path
 import streamlit as st
 
-st.title("💰 Trade and Investment ")
+st.title("💰 Trading and Investment ")
 st.write("Welcome teenagers!")
 st.write(
-    "You are free to use any of our resources to learn content about trade and investment."
+    "You are free to use any of our resources to learn content about trading and investment."
 )
 
 st.markdown(
@@ -17,3 +17,4 @@ st.markdown(
 st.markdown(
     "This package contains 5 articles starting with foundation and ending with Quantitative Trading. After each article, you will have to complete a quiz in order to progress to the next article."
 )
+st.write("Disclaimer: THIS INFORMATION IS PROVIDED FOR GENERAL INFORMATION PURPOSES ONLY AND SHOULD NOT BE CONSIDERED PERSONAL ADVICE ")
