@@ -1,9 +1,68 @@
 import streamlit as st
-
-st.title("Let's learn Trade!")
+import yfinance as yf
+import plotly.graph_objects as go
+st.title("Let's learn Trading!")
 
 st.divider()
 # divider for divider
+
+
+# Various data pulls and non UI things
+res_data = yf.download(
+    "AMZN",
+    start="2006-03-01",
+    end="2006-08-01",
+    interval="1d",
+    auto_adjust=False
+)
+res_fig = go.Figure(
+    data=[
+        go.Candlestick(
+            x=res_data.index,
+            open=res_data[("Open", "AMZN")],
+            high=res_data[("High", "AMZN")],
+            low=res_data[("Low", "AMZN")],
+            close=res_data[("Close", "AMZN")],
+            name="Candles",
+        )
+    ],
+    layout=go.Layout(height=500),
+)
+res_fig.add_hline(
+    y=1.95,
+    line_dash="dash",
+    line_color="blue",
+    line_width=2,
+    annotation_text="Resistance at $1.95 for AMZN (Adjusted for Stock Split)",
+)
+sup_data = yf.download(
+    "BLK",
+    start="2023-12-08",
+    end="2024-06-25",
+    interval="1wk",   
+    auto_adjust=False
+)
+sup_fig = go.Figure(
+    data=[
+        go.Candlestick(
+            x=sup_data.index,
+            open=sup_data[("Open", "BLK")],
+            high=sup_data[("High", "BLK")],
+            low=sup_data[("Low", "BLK")],
+            close=sup_data[("Close", "BLK")],
+            name="Candles",
+        )
+    ],
+    layout=go.Layout(height=500),
+)
+sup_fig.add_hline(
+    y=742,
+    line_dash="dash",
+    line_color="blue",
+    line_width=2,
+    annotation_text="Support at $742 for BLK",
+)
+
 
 st.header("Article 2: Technical Analysis Foundations")
 st.subheader(
@@ -59,20 +118,34 @@ range.write(
     "We can use the range to determine thing ssuch as Volatility, if there is a higher range, prices have more space to jump around, and this means that it is more volatile."
 )
 range.write("We can also use ranges to determine the support/resistance levels")
-range.image(
-    "https://www.investopedia.com/thmb/kqBSGb0bXZ0mXqZ315yoGMg-xP0=/750x0/filters:no_upscale():max_bytes(150000):strip_icc()/dotdash_Final_Support_and_Resistance_Basics_Aug_2020-01-1c737e0debbe49a88d79388977f33b0c.jpg"
-)
+range.plotly_chart(res_fig)
 range.write(
-    "In this example, notice how the top of the range acts as a 'resistance' level where price cannot break through. The inverse applies as shown below"
+    "In this example, notice how the top of the range acts as a 'resistance' level where price cannot break through. The inverse applies as shown below which is the support level"
 )
-range.image(
-    "https://www.investopedia.com/thmb/y7FneUCq0_elrB_K7f-1ToBYBGk=/750x0/filters:no_upscale():max_bytes(150000):strip_icc()/dotdash_Final_Support_and_Resistance_Basics_Aug_2020-02-fc5a37801b9944a6bc17886b19c3ea14.jpg"
-)
+range.plotly_chart(sup_fig)
 up.write(
     "In an uptrend, prices are usually following a structure of Higher Highs, and Higher Lows"
 )
+up.image("https://www.binaryoptions.com/wp-content/uploads/Uptrend-trendline-FTSE-100-Index-Chart.png")
+up.write("Image provided by binaryoptions.com")
 down.write(
     "In an downtrend, prices are usually following a structure of Lower Highs, and Lower Lows"
 )
+down.image("https://www.binaryoptions.com/wp-content/uploads/downtrend-with-lower-lows-and-lower-highs.png")
+down.write("Image provided by binaryoptions.com")
 
 # Add images and descriptions with tabs
+
+st.subheader("Chart Timeframes and Bias")
+st.markdown("In trading charts, there are multiple timeframes available, and using **higher/lower** timeframes can be used to determine existing market bias")
+st.markdown("**Market Bias**: It is the market's overall direction or inclination towards a specific direction either when prices go up or down. It can be obtained through using different timeframes and technical analysis")
+st.markdown("A **Higher** timeframe: this is defined as a when a candle represents a longer period")
+st.markdown("A **Lower** timeframe: this is defined as when a candle represents a shorter period")
+st.markdown("""Here are some common combinations for different types of traders: 
+            
+- Day Traders(People who trade within a single day), **Daily(1d)** for market direction(Longer term trends) + **(1H/30min)** for structure(Think about shorter term market trends) and **(15min/5m)** for entries(When you buy and sell)
+- Swing Traders(People who aren't as active as day traders and trade within the week), **Weekly(1W)** for market direction + **(1d)** for structure) and **(4h/1h)** for entries
+            
+We can use the stacking of timeframes to avoid losing to much more stronger, longer-timeframe market movements during trading, and most importantly identify the market context which are the  trend and Support and Resistance (SR) levels. And when searching for entries(best prices to enter a position) we use Lower Timeframes combined with Technical Analysis to buy at the best price. This is especially important for more active traders, as some times a difference of a few dollars in the stock price can mean earning or losing for the day!
+""")
+

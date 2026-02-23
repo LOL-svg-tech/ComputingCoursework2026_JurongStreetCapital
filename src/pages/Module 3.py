@@ -7,7 +7,7 @@ import pandas as pd
 
 # This entire section is just UI
 
-st.title("Let's learn Trade!")
+st.title("Let's learn Trading!")
 
 st.divider()
 
