@@ -5,6 +5,8 @@ import plotly.graph_objects as go
 import pandas_ta as ta
 import pandas as pd
 
+#This entire section is just UI
+
 st.title("Let's learn Trade!")
 
 st.divider()
@@ -103,12 +105,6 @@ st.write(
     "You can experiment with indicators on charts and practice identifying signals."
 )
 
-st.session_state["rsi"] = st.checkbox("Show RSI")
-st.session_state["macd"] = st.checkbox("Show MACD")
-st.session_state["bbands"] = st.checkbox("Show Bollinger Bands")
-show_rsi = st.session_state["rsi"]
-show_macd = st.session_state["macd"]
-show_bollinger = st.session_state["bbands"]
 tickers = [
     "MMM",
     "AOS",
@@ -614,16 +610,29 @@ tickers = [
     "ZBH",
     "ZTS",
 ]
+# st.session state saves the state of the buttons, so when the app is rerun, our chosen options still remain
+st.session_state["rsi"] = st.checkbox("Show RSI")
+st.session_state["macd"] = st.checkbox("Show MACD")
+st.session_state["bbands"] = st.checkbox("Show Bollinger Bands")
+show_rsi = st.session_state["rsi"]
+show_macd = st.session_state["macd"]
+show_bollinger = st.session_state["bbands"]
 
+# checks if there is a ticker saved, if there is none, then randomly generate a ticker and save it
 if "ticker" not in st.session_state:
     st.session_state["ticker"] = random.choice(tickers)
 
+# Gets the data for the ticker from yfinance
 ticker = st.session_state["ticker"]
 five_day_data = yf.download(ticker, period="5d", interval="5m")
 five_day_data.index = five_day_data.index.tz_convert("America/New_York")
 unique_dates = pd.Series(five_day_data.index.date).unique()
+
+# Gets the second last date, because we display the second last date from today on the candlesticks
 second_last_date = unique_dates[-2]
 second_last_day_data = five_day_data[five_day_data.index.date == second_last_date]
+
+# Create the candlestick graph
 initial_candle_fig = go.Figure(
     data=[
         go.Candlestick(
@@ -638,7 +647,7 @@ initial_candle_fig = go.Figure(
     layout=go.Layout(height=500),
 )
 
-
+# Create the rsi graph, adding the 70 and 30 levels. And also altering the height to 300
 rsi_fig = go.Figure(
     data=[
         go.Scatter(
@@ -655,6 +664,8 @@ rsi_fig.update_yaxes(range=[0, 100])
 rsi_fig.add_hline(y=70, line_color="white")
 rsi_fig.add_hline(y=30, line_color="white")
 
+
+# Create the macd graph, plotting the macd and signal line. And also altering the height to 300
 macd_fig = go.Figure(layout=go.Layout(height=300))
 macd_fig.add_trace(
     go.Scatter(
@@ -674,6 +685,10 @@ macd_fig.add_trace(
         name="Signal Line",
     )
 )
+
+# If the checkbox for bollinger is ticked, then display the bollinger. 
+# The bollinger is directly on the candlestick, therefore we do initial_candle_fig.add_trace(). 
+# initial_candle_fig is the first graph they see before choosing their option
 if show_bollinger:
     initial_candle_fig.add_trace(
         go.Scatter(
@@ -704,9 +719,12 @@ if show_bollinger:
     )
 rangebreaks = [dict(bounds=["sat", "mon"]), dict(bounds=[16, 9.5], pattern="hour")]
 
+# The rangebreaks is to deal with blanks in time, because the market is not open 24/7. 
+# To ensure the graph is smooth, we deal with the gaps by removing them
 initial_candle_fig.update_xaxes(rangebreaks=rangebreaks)
 rsi_fig.update_xaxes(rangebreaks=rangebreaks)
 macd_fig.update_xaxes(rangebreaks=rangebreaks)
+
 # Example: Signal labeling exercise
 st.write("### Signal Labeling Exercise")
 st.write(
@@ -714,6 +732,8 @@ st.write(
 )
 st.write("### Candlestick Chart")
 st.plotly_chart(initial_candle_fig)
+
+# This plots the rsi and macd graphs created earlier if the checkboxes are chosen
 if show_rsi:
     st.write("### RSI")
     st.plotly_chart(rsi_fig)
@@ -722,23 +742,28 @@ if show_macd:
     st.plotly_chart(macd_fig)
 
 
+# Quiz section in the module
 signal_options = ["Bullish", "Bearish"]
-
 st.session_state["signal choice"] = st.radio("Your Signal Choice:", signal_options)
 signal_choice = st.session_state["signal choice"]
 st.write(f"You selected: **{signal_choice}**")
 signal_confirm = st.button("Confirm Choice")
+
+# Once the user choose bullish or bearish, we compare the second last day close price, to latest close price
 if signal_confirm:
     latest_close = five_day_data[("Close", ticker)].iloc[-1]
     second_last_day_close = second_last_day_data[("Close", ticker)].iloc[-1]
-    if signal_choice == "Bullish" and latest_close > second_last_day_close:
+    if signal_choice == "Bullish" and latest_close > second_last_day_close: # If user chooses bullish (price goes up), and the price goes up, they are correct
         st.success("Good job, you identified the trend correctly")
-    elif signal_choice == "Bearish" and latest_close < second_last_day_close:
+    elif signal_choice == "Bearish" and latest_close < second_last_day_close: # If user chooses bearish (price goes down), and the price goes down, they are correct
         st.success("Good job, you identified the trend correctly")
-    else:
+    else: # If they are both chose the wrong option, they will get feedback they are wrong
         st.error(
             "Aw man, you got it wrong. But don't fret, wrong signals are very common in real life trading"
         )
+
+    # This displays the candlestick graph after the user chose
+    # This allows them to see what happened to the price after the snapshot that they saw
     feedback_candle_fig = go.Figure(
         data=[
             go.Candlestick(
@@ -751,6 +776,8 @@ if signal_confirm:
             )
         ]
     )
+
+    # These two traces shows on the candlestick graph the 4 day close price they saw, and where it closed on the latest price
     feedback_candle_fig.add_trace(
         go.Scatter(
             x=[second_last_day_data.index[-1]],
@@ -771,8 +798,11 @@ if signal_confirm:
         )
     )
     feedback_candle_fig.update_xaxes(rangebreaks=rangebreaks)
+    # Plots the graph
     st.plotly_chart(feedback_candle_fig)
     st.write("Click refresh to move on to the next chart")
+
+# When the user clicks refresh, the ticker is updated, and the file is rerun so the new initial_candlestick_graph changes to reflect the new ticker
 continuity = st.button("Refresh")
 if continuity:
     st.session_state["ticker"] = random.choice(tickers)
