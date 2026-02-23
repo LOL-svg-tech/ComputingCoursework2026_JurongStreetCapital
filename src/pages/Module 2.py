@@ -15,7 +15,7 @@ res_data = yf.download(
     interval="1d",
     auto_adjust=False
 )
-res_fig = go.Figure(
+res_fig = go.Figure( # Generate candles for AMZN
     data=[
         go.Candlestick(
             x=res_data.index,
@@ -28,7 +28,7 @@ res_fig = go.Figure(
     ],
     layout=go.Layout(height=500),
 )
-res_fig.add_hline(
+res_fig.add_hline( #Add horizontal line to show support/resistance level
     y=1.95,
     line_dash="dash",
     line_color="blue",
@@ -42,7 +42,7 @@ sup_data = yf.download(
     interval="1wk",   
     auto_adjust=False
 )
-sup_fig = go.Figure(
+sup_fig = go.Figure( # Generate candles for BLK
     data=[
         go.Candlestick(
             x=sup_data.index,
@@ -55,7 +55,7 @@ sup_fig = go.Figure(
     ],
     layout=go.Layout(height=500),
 )
-sup_fig.add_hline(
+sup_fig.add_hline(#Add horizontal line to show support/resistance level
     y=742,
     line_dash="dash",
     line_color="blue",
