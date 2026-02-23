@@ -231,7 +231,7 @@ if show_bollinger:
         shared_xaxes=True,
         vertical_spacing=0.1,
         row_heights=[0.7, 0.3],
-        subplot_title=(f"5m Candlestick Chart for {choice}"),
+        subplot_titles=(f"5m Candlestick Chart for {choice}",),
     )
     fig.add_trace(
         go.Candlestick(
