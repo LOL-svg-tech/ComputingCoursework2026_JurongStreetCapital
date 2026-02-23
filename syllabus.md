@@ -47,7 +47,6 @@ The syllabus avoids Level II / order flow data and focuses on **price-based anal
   - Downtrends  
   - Ranges  
 - Support & Resistance  
-- Chart Timeframes & Bias  
 
 ### Indicators (Intro)
 - Moving Averages  
