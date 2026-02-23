@@ -26,7 +26,8 @@ class Util:  # This was provided by some medium article
     def to_dataframe(data):
         if isinstance(data, list):
             return pd.DataFrame([item.__dict__ for item in data])
-        return pd.DataFrame(data, columns=["tag", "value"]).set_index("tag")
+        df = pd.DataFrame([(k, str(v)) for k, v in data.__dict__.items()], columns=["tag", "value"]).set_index("tag")
+        return df
 
 
 timeInForce = {
@@ -96,14 +97,10 @@ def symHider(df):
     return displayed
 
 @st.cache_data(ttl=60)
-def getBars(symbol, start):
-    req = StockBarsRequest(
-        symbol_or_symbols=symbol,
-        timeframe=TimeFrame.Minute,
-        start=start,
-        limit=600
-    )
-    return dataclient.get_stock_bars(req).df.reset_index()
+def getBars(symbol):
+    df = yf.download(symbol, period="2d", interval="5m", progress=False)
+    df.index = df.index.tz_convert("America/New_York")
+    return df
 
 @st.cache_data(ttl=5)
 def getOrders():
@@ -173,39 +170,19 @@ st.subheader(f"Current Price: {float(sym_info.fast_info.last_price):.2f}")
 
 
 ## Charts
-start = date.today() - timedelta(days=1)  # Display 3 days
-start_indicators = date.today() - timedelta(days=2)  # Get 30 days for MACD
 
-
-
-data = getBars(sym, start).set_index('timestamp').resample('5min').agg({
-    'open': 'first',
-    'high': 'max',
-    'low': 'min',
-    'close': 'last',
-    'volume': 'sum'
-}).fillna(method="ffill").reset_index()
-
-data_indicators = getBars(sym, start_indicators).set_index('timestamp').resample('5min').agg({
-    'open': 'first',
-    'high': 'max',
-    'low': 'min',
-    'close': 'last',
-    'volume': 'sum'
-}).dropna().reset_index()
-
-
+data = getBars(sym)
 
 candlestick = go.Candlestick(
-    x=data["timestamp"],
-    open=data["open"],
-    high=data["high"],
-    low=data["low"],
-    close=data["close"],
+    x=data.index,
+    open=data[("Open", sym)],
+    high=data[("High", sym)],
+    low=data[("Low", sym)],
+    close=data[("Close", sym)],
 )
 
 layout = go.Layout(
-    title=f"30 Day Candlestick Chart for {choice}",
+    title=f"5m Candlestick Chart for {choice}",
     xaxis=dict(title="Date"),
     yaxis=dict(title="Price"),
 )
@@ -220,8 +197,8 @@ from pandas_ta.momentum import rsi as rsi_func
 from pandas_ta.volatility import bbands as bbands_func
 from plotly.subplots import make_subplots
 
-close = data["close"]
-close_indicators = data_indicators["close"]
+close = data[("Close", sym)]
+close = data[("Close", sym)]
 
 rangebreaks = [
     dict(bounds=["sat", "mon"]),   
@@ -237,15 +214,15 @@ if show_bollinger:
         shared_xaxes=True,
         vertical_spacing=0.1,
         row_heights=[0.7, 0.3],
-        subplot_titles=(f"5min Candlestick Chart for {choice}"),
+        subplot_titles=(f"5m Candlestick Chart for {choice}"),
     )
     fig.add_trace(
         go.Candlestick(
-            x=data["timestamp"],
-            open=data["open"],
-            high=data["high"],
-            low=data["low"],
-            close=data["close"],
+            x=data.index,
+            open=data[("Open", sym)],
+            high=data[("High", sym)],
+            low=data[("Low", sym)],
+            close=data[("Close", sym)],
             name="Price",
         ),
         row=1,
@@ -253,7 +230,7 @@ if show_bollinger:
     )
     fig.add_trace(
         go.Scatter(
-            x=data["timestamp"],
+            x=data.index,
             y=bbands_df["BBL_5_2.0_2.0"],
             mode="lines",
             name="Lower Band",
@@ -264,7 +241,7 @@ if show_bollinger:
     )
     fig.add_trace(
         go.Scatter(
-            x=data["timestamp"],
+            x=data.index,
             y=bbands_df["BBU_5_2.0_2.0"],
             mode="lines",
             name="Upper Band",
@@ -275,7 +252,7 @@ if show_bollinger:
     )
     fig.add_trace(
         go.Scatter(
-            x=data["timestamp"],
+            x=data.index,
             y=bbands_df["BBM_5_2.0_2.0"],
             mode="lines",
             name="Middle Band",
@@ -288,15 +265,15 @@ else:
     fig = go.Figure(
         data=[
             go.Candlestick(
-                x=data["timestamp"],
-                open=data["open"],
-                high=data["high"],
-                low=data["low"],
-                close=data["close"],
+                x=data.index,
+                open=data[("Open", sym)],
+                high=data[("High", sym)],
+                low=data[("Low", sym)],
+                close=data[("Close", sym)],
             )
         ]
     )
-    fig.update_layout(title=f"5min Candlestick Chart for {choice}")
+    fig.update_layout(title=f"5m Candlestick Chart for {choice}")
 
 fig.update_xaxes(rangebreaks=rangebreaks)
 st.plotly_chart(fig)
@@ -307,7 +284,7 @@ if show_rsi:
         rsi_fig = go.Figure()
         rsi_fig.add_trace(
             go.Scatter(
-                x=data["timestamp"],
+                x=data.index,
                 y=rsi_data,
                 mode="lines",
                 name="RSI",
@@ -322,12 +299,12 @@ if show_rsi:
         st.plotly_chart(rsi_fig)
 
 if show_macd:
-    macd_data = macd_func(close_indicators)
+    macd_data = macd_func(close)
     if macd_data is not None:
         macd_fig = go.Figure()
         macd_fig.add_trace(
             go.Scatter(
-                x=data_indicators["timestamp"],
+                x=data.index,
                 y=macd_data["MACD_12_26_9"],
                 mode="lines",
                 name="MACD Line",
@@ -336,7 +313,7 @@ if show_macd:
         )
         macd_fig.add_trace(
             go.Scatter(
-                x=data_indicators["timestamp"],
+                x=data.index,
                 y=macd_data["MACDs_12_26_9"],
                 mode="lines",
                 name="Signal Line",
