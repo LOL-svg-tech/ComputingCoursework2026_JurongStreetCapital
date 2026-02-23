@@ -1,5 +1,7 @@
 .streamlit/secrets.toml
-
+.chroma
+.devcontainer
+.github
 src/.streamlit/secrets.toml
 
 # Byte-compiled / optimized / DLL files
