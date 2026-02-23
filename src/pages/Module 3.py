@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 import pandas_ta as ta
 import pandas as pd
 
-#This entire section is just UI
+# This entire section is just UI
 
 st.title("Let's learn Trade!")
 
@@ -686,8 +686,8 @@ macd_fig.add_trace(
     )
 )
 
-# If the checkbox for bollinger is ticked, then display the bollinger. 
-# The bollinger is directly on the candlestick, therefore we do initial_candle_fig.add_trace(). 
+# If the checkbox for bollinger is ticked, then display the bollinger.
+# The bollinger is directly on the candlestick, therefore we do initial_candle_fig.add_trace().
 # initial_candle_fig is the first graph they see before choosing their option
 if show_bollinger:
     initial_candle_fig.add_trace(
@@ -719,7 +719,7 @@ if show_bollinger:
     )
 rangebreaks = [dict(bounds=["sat", "mon"]), dict(bounds=[16, 9.5], pattern="hour")]
 
-# The rangebreaks is to deal with blanks in time, because the market is not open 24/7. 
+# The rangebreaks is to deal with blanks in time, because the market is not open 24/7.
 # To ensure the graph is smooth, we deal with the gaps by removing them
 initial_candle_fig.update_xaxes(rangebreaks=rangebreaks)
 rsi_fig.update_xaxes(rangebreaks=rangebreaks)
@@ -753,11 +753,15 @@ signal_confirm = st.button("Confirm Choice")
 if signal_confirm:
     latest_close = five_day_data[("Close", ticker)].iloc[-1]
     second_last_day_close = second_last_day_data[("Close", ticker)].iloc[-1]
-    if signal_choice == "Bullish" and latest_close > second_last_day_close: # If user chooses bullish (price goes up), and the price goes up, they are correct
+    if (
+        signal_choice == "Bullish" and latest_close > second_last_day_close
+    ):  # If user chooses bullish (price goes up), and the price goes up, they are correct
         st.success("Good job, you identified the trend correctly")
-    elif signal_choice == "Bearish" and latest_close < second_last_day_close: # If user chooses bearish (price goes down), and the price goes down, they are correct
+    elif (
+        signal_choice == "Bearish" and latest_close < second_last_day_close
+    ):  # If user chooses bearish (price goes down), and the price goes down, they are correct
         st.success("Good job, you identified the trend correctly")
-    else: # If they are both chose the wrong option, they will get feedback they are wrong
+    else:  # If they are both chose the wrong option, they will get feedback they are wrong
         st.error(
             "Aw man, you got it wrong. But don't fret, wrong signals are very common in real life trading"
         )

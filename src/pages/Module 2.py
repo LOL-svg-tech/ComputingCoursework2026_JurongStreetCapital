@@ -6,15 +6,21 @@ st.divider()
 # divider for divider
 
 st.header("Article 2: Technical Analysis Foundations")
-st.subheader("When we say technical indicators, we mean using numbers which can help us make an informed decision")
- # Subheader for titles of chapters
+st.subheader(
+    "When we say technical indicators, we mean using numbers which can help us make an informed decision"
+)
+# Subheader for titles of chapters
 st.subheader("Candlestick charts")
 st.markdown("""
 Candlesticks or also refered to as **OHLC** is a mean of plotting the **Open**, **High**, **Low** and **Close** price of an instrument for a certain timeframe. (E.g. a 5min candle, meaning that the candle will be the Open, High, Low, Close prices of an instrument for a specific 5 minute period)
             
 """)
-st.image("https://cdn.britannica.com/13/237813-050-0CA3E424/candlestick-chart-definition.jpg")
-st.markdown("As you can see, the range between the open and the close forms the body, whilst the range from the high/close to the open/low forms the 'wick' of the candle, this is why we call such datapoints in a chart candlesticks")
+st.image(
+    "https://cdn.britannica.com/13/237813-050-0CA3E424/candlestick-chart-definition.jpg"
+)
+st.markdown(
+    "As you can see, the range between the open and the close forms the body, whilst the range from the high/close to the open/low forms the 'wick' of the candle, this is why we call such datapoints in a chart candlesticks"
+)
 
 st.subheader("Meanings of the different prices:")
 # Using markdown so i can bold things
@@ -38,19 +44,35 @@ The **Close Price**:
 """)
 
 st.subheader("Determining bearish/bullish candles")
-st.write("If the close price is higher than the opening price, this means it is a bullish (typically green) candle, while if the close price is less than that of the opening, it will be a bearish (typically red candle)")
+st.write(
+    "If the close price is higher than the opening price, this means it is a bullish (typically green) candle, while if the close price is less than that of the opening, it will be a bearish (typically red candle)"
+)
 
 st.subheader("Determining market structure")
 up, down, range = st.tabs(["Uptrend", "Downtrend", "Ranges"])
 
 
-range.write("The range of a symbol, it is a mouthful of words, but it is defined as the the Highest Price - Lowest Price within a certain timeframe")
-range.write("We can use the range to determine thing ssuch as Volatility, if there is a higher range, prices have more space to jump around, and this means that it is more volatile.")
+range.write(
+    "The range of a symbol, it is a mouthful of words, but it is defined as the the Highest Price - Lowest Price within a certain timeframe"
+)
+range.write(
+    "We can use the range to determine thing ssuch as Volatility, if there is a higher range, prices have more space to jump around, and this means that it is more volatile."
+)
 range.write("We can also use ranges to determine the support/resistance levels")
-range.image("https://www.investopedia.com/thmb/kqBSGb0bXZ0mXqZ315yoGMg-xP0=/750x0/filters:no_upscale():max_bytes(150000):strip_icc()/dotdash_Final_Support_and_Resistance_Basics_Aug_2020-01-1c737e0debbe49a88d79388977f33b0c.jpg")
-range.write("In this example, notice how the top of the range acts as a 'resistance' level where price cannot break through. The inverse applies as shown below")
-range.image("https://www.investopedia.com/thmb/y7FneUCq0_elrB_K7f-1ToBYBGk=/750x0/filters:no_upscale():max_bytes(150000):strip_icc()/dotdash_Final_Support_and_Resistance_Basics_Aug_2020-02-fc5a37801b9944a6bc17886b19c3ea14.jpg")
-up.write("In an uptrend, prices are usually following a structure of Higher Highs, and Higher Lows")
-down.write("In an downtrend, prices are usually following a structure of Lower Highs, and Lower Lows")
+range.image(
+    "https://www.investopedia.com/thmb/kqBSGb0bXZ0mXqZ315yoGMg-xP0=/750x0/filters:no_upscale():max_bytes(150000):strip_icc()/dotdash_Final_Support_and_Resistance_Basics_Aug_2020-01-1c737e0debbe49a88d79388977f33b0c.jpg"
+)
+range.write(
+    "In this example, notice how the top of the range acts as a 'resistance' level where price cannot break through. The inverse applies as shown below"
+)
+range.image(
+    "https://www.investopedia.com/thmb/y7FneUCq0_elrB_K7f-1ToBYBGk=/750x0/filters:no_upscale():max_bytes(150000):strip_icc()/dotdash_Final_Support_and_Resistance_Basics_Aug_2020-02-fc5a37801b9944a6bc17886b19c3ea14.jpg"
+)
+up.write(
+    "In an uptrend, prices are usually following a structure of Higher Highs, and Higher Lows"
+)
+down.write(
+    "In an downtrend, prices are usually following a structure of Lower Highs, and Lower Lows"
+)
 
 # Add images and descriptions with tabs

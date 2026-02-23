@@ -52,14 +52,16 @@ sym_map = {
 
 # Mapping each symbol to fictional company names, so that the user has to really rely solely on skills learnt in modules to trade, not using news or any other alpha
 
-# This reverses the key value pair 
+# This reverses the key value pair
 rev_sym_map = {val: key for key, val in sym_map.items()}
+
 
 # A function to wrap and return s MarketOrderRequest method
 def marketOrderRequest(sym, qty, side, tif):
     return MarketOrderRequest(
         symbol=sym, qty=qty, side=side, time_in_force=timeInForce[tif]
     )
+
 
 # A function to wrap and return Alpaca's LimitOrderRequest method
 def limitOrderRequest(sym, qty, side, lmtPrice, tif):
@@ -71,7 +73,8 @@ def limitOrderRequest(sym, qty, side, lmtPrice, tif):
         time_in_force=timeInForce[tif],
     )
 
-# A function to utilise marketorderequest and submit mktrequest data to alpaca 
+
+# A function to utilise marketorderequest and submit mktrequest data to alpaca
 def marketOrder():
     side = OrderSide.BUY if orderSide == "Buy" else OrderSide.SELL
     req = marketOrderRequest(sym, qty, side, tif)
@@ -79,6 +82,7 @@ def marketOrder():
         client.submit_order(order_data=req)
     except APIError as e:
         st.warning(f"Please fill all fields correctly {e}")
+
 
 # A function to utilise limitorderequest and submit mktrequest data to alpaca f
 def limitOrder():
@@ -88,6 +92,7 @@ def limitOrder():
         client.submit_order(order_data=req)
     except APIError as e:
         st.warning(f"Fill all fields correctly {e}")
+
 
 # Hides the synbol names in tables to prevents users from finding out through posiitions/order table to see what irl symbol they bought/sold
 def symHider(df):
@@ -99,6 +104,7 @@ def symHider(df):
     displayed = displayed.rename(columns={"symbol": "Company"})
     return displayed
 
+
 # Using cache data for efficiency to prevent unnecessary reruns, and using yf.download to obtain ticker data
 @st.cache_data(ttl=60)
 def getBars(symbol):
@@ -106,15 +112,18 @@ def getBars(symbol):
     df.index = df.index.tz_convert("America/New_York")
     return df
 
+
 # Using cache data for efficiency to prevent unnecessary reruns to get orders from alpaca
 @st.cache_data(ttl=5)
 def getOrders():
     return Util.to_dataframe(client.get_orders())
 
+
 # Using cache data for efficiency to prevent unnecessary reruns to get positions from alpaca
 @st.cache_data(ttl=5)
 def getPositions():
     return Util.to_dataframe(client.get_all_positions())
+
 
 # Using cache data for efficiency to prevent unnecessary reruns to get Account data from alpaca
 @st.cache_data(ttl=5)
@@ -122,36 +131,46 @@ def getAccount():
     return client.get_account()
 
 
-account = getAccount() # Get alpaca data
-account_data = Util.to_dataframe(account) # Using the goated medium function to convert all the dict data to df
-bal_chg = float(account.equity) - float(account.last_equity) # get daily balance change in float
-bal = float(account.equity) # get daily balance
-positions = symHider(getPositions()) # Using symhider to mask sym position name
-orders = symHider(getOrders()) # using symhider to mask sym position names
-cum_chg = float(account.equity) - float(100000) # cumulative change of port value (hardcoded 100000 since acc started with 100000)
+account = getAccount()  # Get alpaca data
+account_data = Util.to_dataframe(
+    account
+)  # Using the goated medium function to convert all the dict data to df
+bal_chg = float(account.equity) - float(
+    account.last_equity
+)  # get daily balance change in float
+bal = float(account.equity)  # get daily balance
+positions = symHider(getPositions())  # Using symhider to mask sym position name
+orders = symHider(getOrders())  # using symhider to mask sym position names
+cum_chg = float(account.equity) - float(
+    100000
+)  # cumulative change of port value (hardcoded 100000 since acc started with 100000)
 
 # A bunch of variables computed from alpaca data
 
 ##Sidebar Elements
 
 
-choice = st.sidebar.selectbox("Select a Company", list(sym_map.keys())) # Using list to sym_map.keys() to display as a dropdown
-sym = sym_map[choice] # get actual symbol by referencing dict with choice
-sym_info = yf.Ticker(sym) # Quickly get symbol data with yf.ticker
-orderSide = st.sidebar.selectbox("Select Order Side", ["Buy", "Sell"]) 
+choice = st.sidebar.selectbox(
+    "Select a Company", list(sym_map.keys())
+)  # Using list to sym_map.keys() to display as a dropdown
+sym = sym_map[choice]  # get actual symbol by referencing dict with choice
+sym_info = yf.Ticker(sym)  # Quickly get symbol data with yf.ticker
+orderSide = st.sidebar.selectbox("Select Order Side", ["Buy", "Sell"])
 orderType = st.sidebar.selectbox("Select Order Type", ["Limit(LMT)", "Market(MKT)"])
 
-#Dropdowns of ordertype order side, time in force
+# Dropdowns of ordertype order side, time in force
 if orderType == "Limit(LMT)":
     lmtPrice = st.sidebar.number_input(
         "Enter Limit Price", value=sym_info.fast_info.last_price
     )
-tif = st.sidebar.selectbox("Time In Force", list(timeInForce)) #
-qty = st.sidebar.number_input("Select Qty (Fractional orders are DAY only)") #order qty
+tif = st.sidebar.selectbox("Time In Force", list(timeInForce))  #
+qty = st.sidebar.number_input(
+    "Select Qty (Fractional orders are DAY only)"
+)  # order qty
 st.sidebar.button(
     "Send order", on_click=limitOrder if orderType == "Limit(LMT)" else marketOrder
 )
-if st.sidebar.toggle("Auto-Refresh"): # Autorefresh function
+if st.sidebar.toggle("Auto-Refresh"):  # Autorefresh function
     st_autorefresh(interval=5000)
 
 # TOP OF THE PAGE THINGS ------------
@@ -175,13 +194,15 @@ else:
 
 # abunch of if else for PnL colors
 
-st.subheader(f"Current Price: {float(sym_info.fast_info.last_price):.2f}") #using fast info to get current price
+st.subheader(
+    f"Current Price: {float(sym_info.fast_info.last_price):.2f}"
+)  # using fast info to get current price
 # TOP OF THE PAGE THINGS -----------
 
 
 ## Charts
 
-data = getBars(sym) # calling func getbars to get symbol data
+data = getBars(sym)  # calling func getbars to get symbol data
 
 
 # INDICATORS
