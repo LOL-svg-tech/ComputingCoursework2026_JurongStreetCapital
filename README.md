@@ -1,19 +1,17 @@
-# 🎈 Blank app template
+# README for FinanceTutor App
 
-A simple Streamlit app template for you to modify!
+## Installation and Set-up
+- Go to any browser
+- Type in this link to enter the webapp: <>
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://blank-app-template.streamlit.app/)
+## Usage
+ - Head to the main menu on the left page of the webapp to navigate through the app
+ - Head to the Chatbot (2nd page) if you have any questions about trading
+ - Head to the modules to learn (page 3 to 5)
+ - Head to the trading simulator to apply understanding (page 6)
 
-### How to run it on your own machine
-
-1. Install the requirements
-
-   ```
-   $ pip install -r requirements.txt
-   ```
-
-2. Run the app
-
-   ```
-   $ streamlit run streamlit_app.py
-   ```
+ ## Contact for Help
+ - Contact these developers for any issue
+    - Kenzo Gabriel Sutanto: kenzo_gabriel_sutanto@s2023.ssts.edu.sg
+    - Annamalai Palaniappan: annamalai_palaniappan@s2023.ssts.edu.sg
+    - Dylan Nguyen Dang Khoa: dylan_nguyen_dang_khoa@s2023.ssts.edu.sg
