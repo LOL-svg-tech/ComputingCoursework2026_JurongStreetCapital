@@ -2,7 +2,7 @@
 
 ## Installation and Set-up
 - Go to any browser
-- Type in this link to enter the webapp: <>
+- Type in this link to enter the webapp: https://jurongstreetcapital.streamlit.app/
 
 ## Usage
  - Head to the main menu on the left page of the webapp to navigate through the app
